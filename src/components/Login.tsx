@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Form, Navigate, useLocation, useNavigate } from "react-router-dom";
 import Api from "../api/requests";
 import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
+import { Alert, Button } from "@mui/material";
+import TransitionAlert from "./TransactionAlert";
 
 const api = new Api();
 
@@ -23,8 +25,8 @@ export function Login() {
     const isAuthenticated = useIsAuthenticated()
     const signIn = useSignIn()
 
-    const handleLogin = (credentials: any, { setSubmitting }: any) => {
-        api.getAuthToken(credentials).then(async (response) => {
+    const handleLogin = (credentials: { username: string, password: string }, { setSubmitting, setErrors }: any) => {
+        api.getAuthToken(credentials).then((response) => {
             let authToken = response.data;
             if (signIn(
                 {
@@ -37,14 +39,25 @@ export function Login() {
             } else {
                 //Throw error
             }
+        }).catch(error => {
+            console.log(error.response);
+            setErrors({
+                api: error.response.data.error.message
+            });
+        }).finally(() => {
+            setSubmitting(false);
         });
     }
 
-    const validateForm = (values: { username: string; }) => {
+    const validateForm = (values: { username: string; password: string }) => {
         const errors: FormFields = {};
 
         if (!values.username) {
             errors.username = 'Required';
+        }
+
+        if (!values.password) {
+            errors.password = 'Required';
         }
 
         return errors;
@@ -63,7 +76,7 @@ export function Login() {
                         <div className="max-w-lg w-full space-y-12">
                             <h2 className="text-3xl font-semibold uppercase text-center">Login</h2>
                             <Formik
-                                initialValues={{ username: '', password: '' }}
+                                initialValues={{ username: '', password: '', api: '' }}
                                 validate={validateForm}
 
                                 onSubmit={handleLogin}
@@ -79,17 +92,31 @@ export function Login() {
                                 }) => (
 
                                     <form className="w-full flex flex-col space-y-6" onSubmit={handleSubmit}>
+                                        {errors.api ? (
+                                            <TransitionAlert message={errors.api} severity="error" />
+                                        ) : ""}
+
                                         <div>
                                             <label className="block">Username</label>
                                             <input name="username" type="text" className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-lg" onChange={handleChange} onBlur={handleBlur} value={values.username} />
                                         </div>
-                                        {errors.username && touched.username && errors.username}
+                                        {errors.username ? (
+                                            <Alert severity="error">
+                                                {errors.username && touched.username && errors.username}
+                                            </Alert>
+                                        ) : ""}
 
                                         <div>
                                             <label className="block">Password</label>
                                             <input type="password" name="password" className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-lg" onChange={handleChange} onBlur={handleBlur} value={values.password} />
                                         </div>
-                                        {errors.password && touched.password && errors.password}
+
+                                        {errors.password ? (
+                                            <Alert severity="error">
+                                                {errors.password && touched.password && errors.password}
+                                            </Alert>
+                                        ) : ""}
+
                                         <button type="submit" disabled={isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded text-lg">
                                             Login
                                         </button>
