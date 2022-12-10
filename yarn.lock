@@ -1642,7 +1642,7 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@mui/base@5.0.0-alpha.109":
+"@mui/base@5.0.0-alpha.109", "@mui/base@^5.0.0-alpha.109":
   version "5.0.0-alpha.109"
   resolved "https://registry.yarnpkg.com/@mui/base/-/base-5.0.0-alpha.109.tgz#a536c5c03196ade78681166e750eb44f5682937d"
   integrity sha512-UQxoONPI3ntzxcD/cbFHl+Lp2xsVj6HpKmU9QhUZ2kZ2K2yej2QJyU1gnADoWl/Hu94VrvwSSRnjTjR3HvXO/g==

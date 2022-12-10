@@ -6,7 +6,6 @@ import Collapse from '@mui/material/Collapse';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 
-// export default function TransitionAlert(props: { message: string }) {
 export default function TransitionAlert(props: { message: any, severity: any }) {
     const [open, setOpen] = React.useState(true);
 

@@ -42,6 +42,10 @@ export default class Api {
         return (await this.init()).post("/login", params);
     };
 
+    createAccount = async (params: object) => {
+        return (await this.init()).post("/register", params);
+    };
+
     getCurrentUser = async () => {
         return (await this.init()).get("/profile");
     };
@@ -49,24 +53,4 @@ export default class Api {
     updateProfile = async (params: object) => {
         return (await this.init()).post("/profile", params);
     }
-
-    uploadPhoto = async (params: FormData) => {
-        return (await this.init()).post("/profile/photo", params, {
-            headers: {
-                'Content-type': 'multipart/form-data',
-            }
-        });
-    }
-
-    getEventsList = async () => {
-        return (await this.init()).get("/events");
-    };
-
-    createEvent = async (params: object) => {
-        return (await this.init()).post("/events", params);
-    }
-
-    deleteEvent = async (eventId: number) => {
-        return (await this.init()).delete(`${config.api_url}/events/${eventId}`)
-    };
 }

@@ -1,7 +1,7 @@
 import exp from "constants";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
-import { Form, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Form, Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import Api from "../api/requests";
 import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
 import { Alert, Button } from "@mui/material";
@@ -123,6 +123,10 @@ export function Login() {
                                     </form>
                                 )}
                             </Formik>
+
+                            <Link to="/register" className="block text-gray-600 hover:text-gray-800 text-center" >
+                                Don't have an account? Create one
+                            </Link>
                         </div>
                     </div>
                 </main>
