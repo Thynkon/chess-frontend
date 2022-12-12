@@ -1,18 +1,23 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
+import { useState } from 'react';
 
-export default function LevelPicker() {
-    const levels = Array.from({ length: 4 }, (value, index) => index + 1);
+export default function LevelPicker(props: { values: any[] }) {
+    const [selectedOption, setSelectedOption] = useState(props.values[0]);
+    const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedOption(event.target.value);
+    }
+
     return (
-        <Box sx={{ width: 300 }}>
+        <Box className="w-full">
             <div
-                className="grid grid-cols-4 space-x-2 rounded-xl w-full"
+                className={"flex space-x-2 rounded-xl justify-between"}
                 x-data="app"
             >
-                {levels.map(option => (
-                    <div key={option}>
-                        <input type="radio" name="option" id={String(option)} className="peer hidden" />
+                {props.values.map(option => (
+                    <div key={option} className="w-full">
+                        <input type="radio" name="option" id={String(option)} className="peer hidden" defaultChecked={selectedOption === option} onChange={handleOptionChange} />
                         <label
                             htmlFor={String(option)}
                             className="block cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white"

@@ -23,9 +23,6 @@ export function PlayAgainstComputer() {
     const navigate = useNavigate();
     const { state } = useLocation();
 
-    const isAuthenticated = useIsAuthenticated()
-    const signIn = useSignIn()
-
     const handleLogin = (credentials: FormFields, { setSubmitting, setErrors }: any) => {
         api.getAuthToken(credentials).then((response: { data: any; }) => {
             console.log(credentials);
@@ -60,7 +57,7 @@ export function PlayAgainstComputer() {
     return (
         <div className="flex justify-center">
             <div className="rounded-lg shadow-lg bg-white">
-                <div className="p-6">
+                <div className="p-6 w-96">
                     <Formik
                         initialValues={{ variant: '', level: 1, duration: 5 }}
                         validate={validateForm}
@@ -82,7 +79,7 @@ export function PlayAgainstComputer() {
                                 </div>
                                 <h5 className="text-gray-900 text-xl font-medium mb-2">Play against computer</h5>
                                 <Form className="w-full flex flex-col space-y-6">
-                                    <div>
+                                    <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                         <label className="block">Variant</label>
                                         <VariantDropdown />
                                     </div>
@@ -93,9 +90,9 @@ export function PlayAgainstComputer() {
                                         </Alert>
                                     ) : ""}
 
-                                    <div>
+                                    <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                         <label className="block">Level</label>
-                                        <LevelPicker />
+                                        <LevelPicker values={Array.from({ length: 4 }, (value, index) => index + 1)} />
                                     </div>
                                     {errors.level ? (
                                         <Alert severity="error">
@@ -103,7 +100,7 @@ export function PlayAgainstComputer() {
                                         </Alert>
                                     ) : ""}
 
-                                    <div className="w-full">
+                                    <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                         <label className="block">Duration</label>
                                         <TimeDurationPicker />
                                     </div>

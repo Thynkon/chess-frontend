@@ -5,6 +5,7 @@ import LevelPicker from "./LevelPicker";
 import Api from "../../api/requests";
 import VariantDropdown from "./VariantDropdown";
 import TimeDurationPicker from "./TimeDurationPicker";
+import RankType from "./RankType";
 
 const api = new Api();
 
@@ -55,7 +56,7 @@ export function PlayAgainstFriend() {
     return (
         <div className="flex justify-center">
             <div className="rounded-lg shadow-lg bg-white">
-                <div className="p-6">
+                <div className="p-6 w-96">
                     <Formik
                         initialValues={{ variant: '', level: 1, duration: 5 }}
                         validate={validateForm}
@@ -75,22 +76,11 @@ export function PlayAgainstFriend() {
                                 <div className="py-6 text-center">
                                     <i className="las la-user-friends text-xs text-black sm:text-3xl md:text-7xl mr-5"></i>
                                 </div>
-                                <h5 className="text-gray-900 text-xl font-medium mb-2">Play against computer</h5>
+                                <h5 className="text-gray-900 text-xl font-medium mb-2">Play against friend</h5>
                                 <Form className="w-full flex flex-col space-y-6">
-                                    <div>
-                                        <label className="block">Variant</label>
-                                        <VariantDropdown />
-                                    </div>
-
-                                    {errors.variant ? (
-                                        <Alert severity="error">
-                                            {errors.variant && touched.variant && errors.variant}
-                                        </Alert>
-                                    ) : ""}
-
-                                    <div>
-                                        <label className="block">Level</label>
-                                        <LevelPicker />
+                                    <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
+                                        <label className="block">Rank</label>
+                                        <LevelPicker values={["Casual", "Ranked"]} />
                                     </div>
                                     {errors.level ? (
                                         <Alert severity="error">
@@ -98,7 +88,7 @@ export function PlayAgainstFriend() {
                                         </Alert>
                                     ) : ""}
 
-                                    <div className="w-full">
+                                    <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                         <label className="block">Duration</label>
                                         <TimeDurationPicker />
                                     </div>
