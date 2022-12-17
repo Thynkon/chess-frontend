@@ -43,27 +43,30 @@ export const Carousel = (props: CarouselProps) => {
 
     return (
         <AnimatePresence initial={false} custom={direction}>
-            <motion.div
-                animate={controls}
-                initial={{ x: 0 }}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                onDragEnd={handleDragEnd}
-                // initial={{ x: "100%" }}
-                // animate={{ x: 0 }}
-                transition={{ type: "spring", stiffness: 300, duration: 3 }}
-                // transition={{ duration: 3 }}  // Add the transition duration here
-                className={"flex justify-center max-w-4xl mx-auto items-center space-x-4 bg-white rounded-xl " + props.className}
-            >
-                <i className="las la-angle-left text-4xl" onClick={handlePrevious}></i>
-                {items[currentIndex]}
-                <i className="las la-angle-right text-4xl" onClick={handleNext}></i>
-                <div className="flex space-x-3 justify-center p-6 w-96">
+            <div className='flex flex-col justify-center items-center rounded-lg shadow-lg bg-white'>
+                <motion.div
+                    animate={controls}
+                    initial={{ x: 0 }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    onDragEnd={handleDragEnd}
+                    // initial={{ x: "100%" }}
+                    // animate={{ x: 0 }}
+                    transition={{ type: "spring", stiffness: 300, duration: 3 }}
+                    // transition={{ duration: 3 }}  // Add the transition duration here
+                    className={"flex justify-center max-w-4xl mx-auto items-center space-x-4 " + props.className}
+                >
+                    <i className="las la-angle-left text-4xl" onClick={handlePrevious}></i>
+                    {items[currentIndex]}
+                    <i className="las la-angle-right text-4xl" onClick={handleNext}></i>
+
+                </motion.div>
+                <div className="w-full flex space-x-3 justify-center items-center p-6">
                     <button type="button" className="w-4 h-4 rounded-full bg-blue-500" aria-current="false" aria-label="Slide 1" data-carousel-slide-to="0"></button>
                     <button type="button" className="w-4 h-4 rounded-full bg-blue-500" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
                     <button type="button" className="w-4 h-4 rounded-full bg-blue-500" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
                 </div>
-            </motion.div>
+            </div>
         </AnimatePresence>
     );
 };

@@ -3,15 +3,23 @@ import { RequireAuth } from 'react-auth-kit'
 import Login from "../components/Login";
 import Register from "../components/Register";
 import Root from "./Root";
+import Game from "../components/games/Game";
+import { LoadingAnimation } from "../components/Loading";
 
 const RouteComponent = () => {
     return (
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/loading" element={<LoadingAnimation />} />
             <Route path={'/'} element={
                 <RequireAuth loginPath={'/login'}>
                     <Root />
+                </RequireAuth>
+            } />
+            <Route path={'/play'} element={
+                <RequireAuth loginPath={'/login'}>
+                    <Game />
                 </RequireAuth>
             } />
         </Routes>

@@ -55,57 +55,55 @@ export function PlayAgainstFriend() {
     }
     return (
         <div className="flex justify-center">
-            <div className="rounded-lg shadow-lg bg-white">
-                <div className="p-6 w-96">
-                    <Formik
-                        initialValues={{ variant: '', level: 1, duration: 5 }}
-                        validate={validateForm}
+            <div className="p-6 w-96">
+                <Formik
+                    initialValues={{ variant: '', level: 1, duration: 5 }}
+                    validate={validateForm}
 
-                        onSubmit={handleLogin}
-                    >
-                        {({
-                            values,
-                            errors,
-                            touched,
-                            handleChange,
-                            handleBlur,
-                            isSubmitting,
-                        }) => (
+                    onSubmit={handleLogin}
+                >
+                    {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        isSubmitting,
+                    }) => (
 
-                            <div className="w-full">
-                                <div className="py-6 text-center">
-                                    <i className="las la-user-friends text-xs text-black sm:text-3xl md:text-7xl mr-5"></i>
-                                </div>
-                                <h5 className="text-gray-900 text-xl font-medium mb-2">Play against friend</h5>
-                                <Form className="w-full flex flex-col space-y-6">
-                                    <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
-                                        <label className="block">Rank</label>
-                                        <LevelPicker values={["Casual", "Ranked"]} />
-                                    </div>
-                                    {errors.level ? (
-                                        <Alert severity="error">
-                                            {errors.level && touched.level && errors.level}
-                                        </Alert>
-                                    ) : ""}
-
-                                    <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
-                                        <label className="block">Duration</label>
-                                        <TimeDurationPicker />
-                                    </div>
-                                    {errors.duration ? (
-                                        <Alert severity="error">
-                                            {errors.duration && touched.duration && errors.duration}
-                                        </Alert>
-                                    ) : ""}
-
-                                    <button type="submit" disabled={isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded text-lg">
-                                        Play
-                                    </button>
-                                </Form>
+                        <div className="w-full">
+                            <div className="py-6 text-center">
+                                <i className="las la-user-friends text-xs text-black sm:text-3xl md:text-7xl mr-5"></i>
                             </div>
-                        )}
-                    </Formik>
-                </div>
+                            <h5 className="text-gray-900 text-xl font-medium mb-2">Play against friend</h5>
+                            <Form className="w-full flex flex-col space-y-6">
+                                <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
+                                    <label className="block">Rank</label>
+                                    <LevelPicker values={["Casual", "Ranked"]} />
+                                </div>
+                                {errors.level ? (
+                                    <Alert severity="error">
+                                        {errors.level && touched.level && errors.level}
+                                    </Alert>
+                                ) : ""}
+
+                                <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
+                                    <label className="block">Duration</label>
+                                    <TimeDurationPicker />
+                                </div>
+                                {errors.duration ? (
+                                    <Alert severity="error">
+                                        {errors.duration && touched.duration && errors.duration}
+                                    </Alert>
+                                ) : ""}
+
+                                <button type="submit" disabled={isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded text-lg">
+                                    Play
+                                </button>
+                            </Form>
+                        </div>
+                    )}
+                </Formik>
             </div>
         </div >
     );
