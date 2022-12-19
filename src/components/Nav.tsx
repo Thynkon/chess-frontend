@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useSignOut } from 'react-auth-kit'
 import { useNavigate } from 'react-router-dom';
+import { ButtonUnstyled } from '@mui/base';
 
 const pages = ['Games', 'Stats', 'Other players'];
 
@@ -38,6 +39,10 @@ export function Nav() {
         setAnchorElUser(null);
     };
 
+    const handleProfile = () => {
+        navigate("/profile");
+    };
+
     const handleLogout = () => {
         signOut();
     };
@@ -45,7 +50,7 @@ export function Nav() {
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
-                <Toolbar disableGutters>
+                <Toolbar disableGutters className=''>
                     <Typography
                         variant="h6"
                         noWrap
@@ -63,7 +68,6 @@ export function Nav() {
                     >
                         ExChess
                     </Typography>
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
@@ -121,13 +125,14 @@ export function Nav() {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                            <Button
+                            <ButtonUnstyled
                                 key={page}
                                 onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                /* sx={{ my: 2, color: 'white', display: 'block' }} */
+                                className="mx-2 p-2 rounded-lg text-white block my-2 hover:bg-gray-100 hover:text-blue-500 transition duration-150 ease-in"
                             >
                                 {page}
-                            </Button>
+                            </ButtonUnstyled>
                         ))}
                     </Box>
 
@@ -153,6 +158,9 @@ export function Nav() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
+                            <MenuItem key={"Profile"} onClick={handleProfile}>
+                                <Typography textAlign="center">{"Profile"}</Typography>
+                            </MenuItem>
                             <MenuItem key={"Logout"} onClick={handleLogout}>
                                 <Typography textAlign="center">{"Logout"}</Typography>
                             </MenuItem>

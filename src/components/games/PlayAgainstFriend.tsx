@@ -52,7 +52,6 @@ export function PlayAgainstFriend() {
         }
 
         return errors;
-        // <LevelPicker values={["Casual", "Ranked"]} />
     }
     return (
         <div className="flex justify-center">
@@ -80,6 +79,7 @@ export function PlayAgainstFriend() {
                             <Form className="w-full flex flex-col space-y-6">
                                 <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                     <label className="block">Rank</label>
+                                    <LevelPicker values={["Casual", "Ranked"]} field={undefined} form={undefined} />
                                 </div>
                                 {errors.level ? (
                                     <Alert severity="error">
@@ -97,7 +97,7 @@ export function PlayAgainstFriend() {
                                     </Alert>
                                 ) : ""}
 
-                                <button type="submit" disabled={isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded text-lg">
+                                <button type="submit" disabled={isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-lg">
                                     Play
                                 </button>
                             </Form>

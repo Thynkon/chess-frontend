@@ -5,6 +5,7 @@ import Register from "../components/Register";
 import Root from "./Root";
 import Game from "../components/games/Game";
 import { LoadingAnimation } from "../components/Loading";
+import Profile from "../components/Profile";
 
 const RouteComponent = () => {
     return (
@@ -20,6 +21,11 @@ const RouteComponent = () => {
             <Route path={'/play'} element={
                 <RequireAuth loginPath={'/login'}>
                     <Game />
+                </RequireAuth>
+            } />
+            <Route path={'/profile'} element={
+                <RequireAuth loginPath={'/login'}>
+                    <Profile />
                 </RequireAuth>
             } />
         </Routes>

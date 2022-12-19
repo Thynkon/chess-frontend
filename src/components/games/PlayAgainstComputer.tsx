@@ -115,7 +115,7 @@ export function PlayAgainstComputer() {
                                     </Alert>
                                 ) : ""}
 
-                                <button type="submit" disabled={formik.isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded text-lg">
+                                <button type="submit" disabled={formik.isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-lg">
                                     Play
                                 </button>
                             </div>
