@@ -1,16 +1,16 @@
 import * as React from 'react';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
+import { useState } from 'react';
 
-export default function TimeDurationPicker() {
+export default function TimeDurationPicker({ field, form, ...props }) {
     const variants = [5, 10, 15, 20];
-    const [variant, setVariant] = React.useState(variants[0]);
+    const [variant, setVariant] = useState(variants[0]);
 
     const handleChange = (event: any) => {
-        setVariant(event.target.value);
+        setVariant(Number(event.target.value));
+        form.setFieldValue('duration', Number(event.target.value));
     };
 
     return (

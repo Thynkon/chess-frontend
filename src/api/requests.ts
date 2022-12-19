@@ -9,28 +9,28 @@ interface Headers {
 }
 
 export default class Api {
-    api_token: Nullable<string>;
-    api_url: string;
+    apiToken: Nullable<string>;
+    apiUrl: string;
     client: Nullable<AxiosInstance>;
 
     constructor() {
-        this.api_token = null;
+        this.apiToken = null;
         this.client = null;
-        this.api_url = config.api_url;
+        this.apiUrl = config.api_url;
     }
 
     init = async () => {
-        this.api_token = localStorage.getItem('auth-token');
+        this.apiToken = localStorage.getItem('authToken');
 
         let headers: Headers = {};
         headers.Accept = "application/json";
 
-        if (this.api_token) {
-            headers.Authorization = `Bearer ${this.api_token}`;
+        if (this.apiToken) {
+            headers.Authorization = `Bearer ${this.apiToken}`;
         }
 
         this.client = axios.create({
-            baseURL: this.api_url,
+            baseURL: this.apiUrl,
             timeout: 31000,
             headers: headers,
         });
@@ -46,11 +46,7 @@ export default class Api {
         return (await this.init()).post("/register", params);
     };
 
-    getCurrentUser = async () => {
-        return (await this.init()).get("/profile");
+    createGame = async (params: object) => {
+        return (await this.init()).post("/games", params);
     };
-
-    updateProfile = async (params: object) => {
-        return (await this.init()).post("/profile", params);
-    }
 }

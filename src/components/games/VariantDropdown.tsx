@@ -1,16 +1,15 @@
 import * as React from 'react';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-export default function VariantDropdown() {
-    const variants = ["Standard", "Crazyhouse", "King of the hill"];
+export default function VariantDropdown({ field, form, ...props }) {
+    const variants = ["standard", "crazyhouse"];
     const [variant, setVariant] = React.useState(variants[0]);
 
     const handleChange = (event: SelectChangeEvent) => {
         setVariant(event.target.value);
+        form.setFieldValue('variant', event.target.value);
     };
 
     return (
@@ -24,7 +23,7 @@ export default function VariantDropdown() {
                     inputProps={{ 'aria-label': 'Without label' }}
                 >
                     {variants.map((variant, index) => (
-                        <MenuItem key={index} value={variant}>{variant}</MenuItem>
+                        <MenuItem key={index} value={variant}>{variant.charAt(0).toUpperCase() + variant.slice(1)}</MenuItem>
                     ))}
                 </Select>
             </FormControl>

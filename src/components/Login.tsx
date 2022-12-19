@@ -1,10 +1,8 @@
-import exp from "constants";
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
-import { Form, Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import Api from "../api/requests";
 import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
-import { Alert, Button } from "@mui/material";
+import { Alert } from "@mui/material";
 import TransitionAlert from "./TransactionAlert";
 
 const api = new Api();
@@ -28,9 +26,11 @@ export function Login() {
     const handleLogin = (credentials: { username: string, password: string }, { setSubmitting, setErrors }: any) => {
         api.getAuthToken(credentials).then((response) => {
             let authToken = response.data;
+            localStorage.setItem('authToken', authToken.token);
+            console.log(authToken.token);
             if (signIn(
                 {
-                    token: authToken,
+                    token: authToken.token,
                     expiresIn: 60,
                     tokenType: "Bearer",
                 }

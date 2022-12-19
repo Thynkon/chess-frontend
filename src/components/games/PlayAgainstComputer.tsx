@@ -1,5 +1,5 @@
 import { Alert } from "@mui/material";
-import { Formik, Form } from "formik";
+import { Field, useFormik, FormikProvider } from "formik";
 import { useNavigate, useLocation } from "react-router-dom";
 import LevelPicker from "./LevelPicker";
 import Api from "../../api/requests";
@@ -22,92 +22,107 @@ export function PlayAgainstComputer() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const handleLogin = (credentials: FormFields, { setSubmitting, setErrors }: any) => {
-        localStorage.setItem('current_route', "/play");
+    const handleSubmit = (data: FormFields, { setSubmitting, setErrors }: any) => {
+        let form_data = data;
+        form_data.duration = form_data.duration * 60;
+        console.log(form_data);
         navigate("/loading");
+        /*
+                api.createGame(form_data).then((response) => {
+                    localStorage.setItem('current_route', "/play");
+                    navigate("/loading");
+                    setSubmitting(false);
+                }).catch(error => {
+                    console.log(error.response);
+                    setErrors({
+                        api: error.response.data.error.message
+                    });
+                }).finally(() => {
+                    setSubmitting(false);
+                });
+                */
     }
 
     const validateForm = (values: { variant: string, level: number, duration: number }) => {
         const errors: { variant?: string, level?: string, duration?: string } = {};
         console.log(values);
 
-        // if (!values.variant) {
-        //     errors.variant = 'Required';
-        // }
-        //
-        // if (!values.level) {
-        //     errors.level = 'Required';
-        // }
-        //
-        // if (!values.duration) {
-        //     errors.duration = 'Required';
-        // }
+        if (!values.variant) {
+            errors.variant = 'Required';
+        }
+
+        if (!values.level) {
+            errors.level = 'Required';
+        }
+
+        if (!values.duration) {
+            errors.duration = 'Required';
+        }
 
         return errors;
     }
+
+    const variants = ["standard", "crazyhouse"];
+    const formik = useFormik({
+        initialValues: {
+            variant: variants[0],
+            level: 1,
+            duration: 300,
+        },
+        validate: validateForm,
+        onSubmit: handleSubmit,
+    });
+
     return (
-        <div className="flex justify-center">
-            <div className="p-6 w-96">
-                <Formik
-                    initialValues={{ variant: '', level: 1, duration: 5 }}
-                    validate={validateForm}
-
-                    onSubmit={handleLogin}
-                >
-                    {({
-                        values,
-                        errors,
-                        touched,
-                        handleChange,
-                        handleBlur,
-                        isSubmitting,
-                    }) => (
-
+        <FormikProvider value={formik}>
+            <div className="flex justify-center">
+                <div className="p-6 w-96">
+                    <form onSubmit={formik.handleSubmit}>
                         <div className="w-full">
                             <div className="py-6 text-center">
                                 <i className="las la-robot text-xs text-black sm:text-3xl md:text-8xl mr-5"></i>
                             </div>
                             <h5 className="text-gray-900 text-xl font-medium mb-2">Play against computer</h5>
-                            <Form className="w-full flex flex-col space-y-6">
+                            <div className="w-full flex flex-col space-y-6">
                                 <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                     <label className="block">Variant</label>
-                                    <VariantDropdown />
+                                    <Field name="variant" component={VariantDropdown} />
                                 </div>
 
-                                {errors.variant ? (
+                                {formik.errors.variant ? (
                                     <Alert severity="error">
-                                        {errors.variant && touched.variant && errors.variant}
+                                        {formik.errors.variant}
                                     </Alert>
                                 ) : ""}
 
                                 <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                     <label className="block">Level</label>
-                                    <LevelPicker values={Array.from({ length: 4 }, (value, index) => index + 1)} />
+                                    <Field name="level" component={LevelPicker} values={Array.from({ length: 4 }, (value, index) => index + 1)} />
                                 </div>
-                                {errors.level ? (
+                                {formik.errors.level ? (
                                     <Alert severity="error">
-                                        {errors.level && touched.level && errors.level}
+                                        {formik.errors.level}
                                     </Alert>
                                 ) : ""}
 
                                 <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                     <label className="block">Duration</label>
-                                    <TimeDurationPicker />
+                                    <Field name="duration" component={TimeDurationPicker} />
                                 </div>
-                                {errors.duration ? (
+                                {formik.errors.duration ? (
                                     <Alert severity="error">
-                                        {errors.duration && touched.duration && errors.duration}
+                                        {formik.errors.duration}
                                     </Alert>
                                 ) : ""}
 
-                                <button type="submit" disabled={isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded text-lg">
+                                <button type="submit" disabled={formik.isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded text-lg">
                                     Play
                                 </button>
-                            </Form>
+                            </div>
                         </div>
-                    )}
-                </Formik>
-            </div>
-        </div >
+                    </form>
+                </div >
+            </div >
+        </FormikProvider>
     );
 }

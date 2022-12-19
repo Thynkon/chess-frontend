@@ -1,5 +1,5 @@
 import { Alert } from "@mui/material";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 import LevelPicker from "./LevelPicker";
 import Api from "../../api/requests";
@@ -52,6 +52,7 @@ export function PlayAgainstFriend() {
         }
 
         return errors;
+        // <LevelPicker values={["Casual", "Ranked"]} />
     }
     return (
         <div className="flex justify-center">
@@ -79,7 +80,6 @@ export function PlayAgainstFriend() {
                             <Form className="w-full flex flex-col space-y-6">
                                 <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                     <label className="block">Rank</label>
-                                    <LevelPicker values={["Casual", "Ranked"]} />
                                 </div>
                                 {errors.level ? (
                                     <Alert severity="error">
@@ -89,7 +89,7 @@ export function PlayAgainstFriend() {
 
                                 <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                     <label className="block">Duration</label>
-                                    <TimeDurationPicker />
+                                    <Field name="duration" component={TimeDurationPicker} />
                                 </div>
                                 {errors.duration ? (
                                     <Alert severity="error">

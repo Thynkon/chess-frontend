@@ -55,20 +55,27 @@ export function LoadingAnimation() {
     }, [navigate]);
 
     return (
-        <Loader>
-            <div className='mt-40 basis-full'>
-                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Loading...</h2>
-            </div>
-            <div className='basis-full'>
-                <motion.span
-                    style={ballStyle}
-                    transition={bounceTransition}
-                    animate={{
-                        y: ["50%", "-50%"],
-                        backgroundColor: ["#ff6699", "#6666ff"]
-                    }}
-                />
-            </div>
-        </Loader>
+        <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: "100%" }}
+            exit={{ x: "100%" }}
+        // transition={{ duration: 0.1 }}
+        >
+            <Loader>
+                <div className='mt-40 basis-full'>
+                    <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Loading...</h2>
+                </div>
+                <div className='basis-full'>
+                    <motion.span
+                        style={ballStyle}
+                        transition={bounceTransition}
+                        animate={{
+                            y: ["50%", "-50%"],
+                            backgroundColor: ["#ff6699", "#6666ff"]
+                        }}
+                    />
+                </div>
+            </Loader>
+        </motion.div>
     );
 }

@@ -6,10 +6,10 @@ export default function Root() {
     return (
         <>
             <motion.div
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.1 }}
+                transition={{ duration: 0.75, ease: "easeOut" }}
             >
                 <Nav />
                 <div className="w-full mt-10">
