@@ -13,6 +13,7 @@ interface CarouselProps {
 }
 
 export const Carousel = (props: CarouselProps) => {
+    const elements = 2;
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0)
 
@@ -41,9 +42,23 @@ export const Carousel = (props: CarouselProps) => {
         controls.start({ x: 0, transition: { duration: 0.5 } });
     };
 
+    let buttons: any = [];
+    for (let i = 0; i < elements; i++) {
+        buttons.push(
+            <button
+                type="button" key={i} data-carousel-slide-to={i}
+                className={
+                    "w-4 h-4 rounded-full border-2 border-blue-500 " +
+                    (currentIndex === i ? "bg-blue-500" : "bg-white hover:scale-125 transition duration-300 ease-in")
+                }
+                onClick={currentIndex !== i ? handleNext : () => { }}
+            />
+        );
+    }
+
     return (
         <AnimatePresence initial={false} custom={direction}>
-            <div className='flex flex-col justify-center items-center rounded-lg shadow-lg bg-white'>
+            <div className='flex flex-col justify-center items-center bg-white'>
                 <motion.div
                     animate={controls}
                     initial={{ x: 0 }}
@@ -57,14 +72,14 @@ export const Carousel = (props: CarouselProps) => {
                     className={"flex justify-center max-w-4xl mx-auto items-center space-x-4 " + props.className}
                 >
                     <i className="las la-angle-left text-4xl" onClick={handlePrevious}></i>
-                    {items[currentIndex]}
+                    <div className='rounded-lg shadow-lg'>
+                        {items[currentIndex]}
+                    </div>
                     <i className="las la-angle-right text-4xl" onClick={handleNext}></i>
 
                 </motion.div>
                 <div className="w-full flex space-x-3 justify-center items-center p-6">
-                    <button type="button" className="w-4 h-4 rounded-full bg-blue-500" aria-current="false" aria-label="Slide 1" data-carousel-slide-to="0"></button>
-                    <button type="button" className="w-4 h-4 rounded-full bg-blue-500" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
-                    <button type="button" className="w-4 h-4 rounded-full bg-blue-500" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+                    {buttons}
                 </div>
             </div>
         </AnimatePresence>
