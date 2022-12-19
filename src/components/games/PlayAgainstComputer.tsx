@@ -76,49 +76,47 @@ export function PlayAgainstComputer() {
     return (
         <FormikProvider value={formik}>
             <div className="flex justify-center">
-                <div className="p-6 w-96">
-                    <form onSubmit={formik.handleSubmit}>
-                        <div className="w-full">
-                            <div className="py-6 text-center">
-                                <i className="las la-robot text-xs text-black sm:text-3xl md:text-8xl mr-5"></i>
+                <div className="p-6 w-96 bg-gray-50 rounded-md shadow-md">
+                    <form onSubmit={formik.handleSubmit} className="w-full">
+                        <div className="py-6 text-center">
+                            <i className="las la-robot text-xs text-black sm:text-3xl md:text-8xl mr-5"></i>
+                        </div>
+                        <h5 className="text-gray-900 text-xl font-medium mb-2">Play against computer</h5>
+                        <div className="w-full flex flex-col space-y-6">
+                            <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
+                                <label className="block">Variant</label>
+                                <Field name="variant" component={VariantDropdown} />
                             </div>
-                            <h5 className="text-gray-900 text-xl font-medium mb-2">Play against computer</h5>
-                            <div className="w-full flex flex-col space-y-6">
-                                <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
-                                    <label className="block">Variant</label>
-                                    <Field name="variant" component={VariantDropdown} />
-                                </div>
 
-                                {formik.errors.variant ? (
-                                    <Alert severity="error">
-                                        {formik.errors.variant}
-                                    </Alert>
-                                ) : ""}
+                            {formik.errors.variant ? (
+                                <Alert severity="error">
+                                    {formik.errors.variant}
+                                </Alert>
+                            ) : ""}
 
-                                <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
-                                    <label className="block">Level</label>
-                                    <Field name="level" component={LevelPicker} values={Array.from({ length: 4 }, (value, index) => index + 1)} />
-                                </div>
-                                {formik.errors.level ? (
-                                    <Alert severity="error">
-                                        {formik.errors.level}
-                                    </Alert>
-                                ) : ""}
-
-                                <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
-                                    <label className="block">Duration</label>
-                                    <Field name="duration" component={TimeDurationPicker} />
-                                </div>
-                                {formik.errors.duration ? (
-                                    <Alert severity="error">
-                                        {formik.errors.duration}
-                                    </Alert>
-                                ) : ""}
-
-                                <button type="submit" disabled={formik.isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-lg">
-                                    Play
-                                </button>
+                            <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
+                                <label className="block">Level</label>
+                                <Field name="level" component={LevelPicker} values={Array.from({ length: 4 }, (value, index) => index + 1)} />
                             </div>
+                            {formik.errors.level ? (
+                                <Alert severity="error">
+                                    {formik.errors.level}
+                                </Alert>
+                            ) : ""}
+
+                            <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
+                                <label className="block">Duration</label>
+                                <Field name="duration" component={TimeDurationPicker} />
+                            </div>
+                            {formik.errors.duration ? (
+                                <Alert severity="error">
+                                    {formik.errors.duration}
+                                </Alert>
+                            ) : ""}
+
+                            <button type="submit" disabled={formik.isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-lg">
+                                Play
+                            </button>
                         </div>
                     </form>
                 </div >
