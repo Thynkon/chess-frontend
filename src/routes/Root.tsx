@@ -3,10 +3,8 @@ import { Nav } from "../components/Nav";
 import { motion } from "framer-motion";
 import { PlayAgainstComputer } from "../components/games/PlayAgainstComputer";
 import { PlayAgainstFriend } from "../components/games/PlayAgainstFriend";
-import { IoIosArrowDropleftCircle } from "react-icons/io"
 
 export default function Root() {
-    // <Carousel className="w-full" />
     return (
         <>
             <motion.div

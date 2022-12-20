@@ -10,10 +10,10 @@ import { AnimatePresence } from 'framer-motion';
 
 export function App() {
   return (
-    <AuthProvider authType={'cookie'}
+    <AuthProvider
+      authType={'localstorage'}
       authName={'_auth'}
-      cookieDomain={window.location.hostname}
-      cookieSecure={true}>
+      >
       <AnimatePresence>
         <RouteComponent />
       </AnimatePresence>

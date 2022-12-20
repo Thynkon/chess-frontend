@@ -26,7 +26,6 @@ export function Login() {
     const handleLogin = (credentials: { username: string, password: string }, { setSubmitting, setErrors }: any) => {
         api.getAuthToken(credentials).then((response) => {
             let authToken = response.data;
-            localStorage.setItem('authToken', authToken.token);
             console.log(authToken.token);
             if (signIn(
                 {

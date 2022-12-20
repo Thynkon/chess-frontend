@@ -1,28 +1,18 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { useSignOut } from 'react-auth-kit'
 import { useNavigate } from 'react-router-dom';
-import { ButtonUnstyled } from '@mui/base';
+import { Dropdown, Navbar } from 'flowbite-react';
+
+import { useAuthUser } from 'react-auth-kit'
 
 const pages = ['Games', 'Stats', 'Other players'];
 
 export function Nav() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    const signOut = useSignOut()
+    const signOut = useSignOut();
     const navigate = useNavigate();
+    const auth = useAuthUser();
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -39,136 +29,66 @@ export function Nav() {
         setAnchorElUser(null);
     };
 
-    const handleProfile = () => {
-        navigate("/profile");
-    };
-
-    const handleLogout = () => {
-        signOut();
-    };
+    React.useEffect(() => {
+        console.log(auth());
+    });
 
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters className=''>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        onClick={(e) => navigate("/")}
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        ExChess
-                    </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href=""
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        ExChess
-                    </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <ButtonUnstyled
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                /* sx={{ my: 2, color: 'white', display: 'block' }} */
-                                className="mx-2 p-2 rounded-lg text-white block my-2 hover:bg-gray-100 hover:text-blue-500 transition duration-150 ease-in"
-                            >
-                                {page}
-                            </ButtonUnstyled>
-                        ))}
-                    </Box>
-
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            <MenuItem key={"Profile"} onClick={handleProfile}>
-                                <Typography textAlign="center">{"Profile"}</Typography>
-                            </MenuItem>
-                            <MenuItem key={"Logout"} onClick={handleLogout}>
-                                <Typography textAlign="center">{"Logout"}</Typography>
-                            </MenuItem>
-                        </Menu>
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
+        <Navbar
+            fluid={true}
+            rounded={true}
+            className="py-4 shadow-md"
+        >
+            <Navbar.Brand onClick={() => navigate("/")}>
+                <img
+                    src="https://flowbite.com/docs/images/logo.svg"
+                    className="mr-3 h-6 sm:h-9"
+                    alt="Flowbite Logo"
+                />
+                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+                    ExChess
+                </span>
+            </Navbar.Brand>
+            <div className="flex md:order-2">
+                <Dropdown
+                    arrowIcon={true}
+                    inline={true}
+                    label={"Settings"}
+                >
+                    <Dropdown.Header>
+                        <span className="block text-sm">
+                            Bonnie Green
+                            {auth()?.user}
+                        </span>
+                        <span className="block truncate text-sm font-medium">
+                            name@flowbite.com
+                        </span>
+                    </Dropdown.Header>
+                    <Dropdown.Item onClick={() => navigate("/profile")}>
+                        Profile
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={() => signOut()}>
+                        Log out
+                    </Dropdown.Item>
+                </Dropdown>
+                <Navbar.Toggle />
+            </div>
+            <Navbar.Collapse className='h-4'>
+                <Navbar.Link
+                    href="/games"
+                    active={true}
+                    className="hover:bg-blue-700 hover:text-white px-6 py-2 rounded-md transition duration-150 ease-in"
+                >
+                    Games
+                </Navbar.Link>
+                <Navbar.Link href="/other_players"
+                    className="hover:bg-blue-700 hover:text-white px-6 py-2 rounded-md transition duration-150 ease-in"
+                >
+                    Other players
+                </Navbar.Link>
+            </Navbar.Collapse>
+        </Navbar>
     );
 }
 export default Nav;

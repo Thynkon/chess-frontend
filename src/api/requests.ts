@@ -20,7 +20,7 @@ export default class Api {
     }
 
     init = async () => {
-        this.apiToken = localStorage.getItem('authToken');
+        this.apiToken = localStorage.getItem('_auth');
 
         let headers: Headers = {};
         headers.Accept = "application/json";
