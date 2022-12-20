@@ -8,9 +8,9 @@ import Chessground from "@react-chess/chessground";
 import { Key } from "chessground/types";
 
 // these styles must be imported somewhere
-import "chessground/assets/chessground.base.css";
-import "chessground/assets/chessground.brown.css";
-import "chessground/assets/chessground.cburnett.css";
+import "../../assets/base.css";
+import "../../assets/brown.css";
+import "../../assets/alpha/cburnett.css";
 
 type Moves = {
     [key in Key]: Key[]
@@ -18,7 +18,6 @@ type Moves = {
 
 export default function Game() {
     useEffect(() => {
-
         const setup = parseFen('r1bqkbnr/ppp2Qpp/2np4/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4').unwrap();
         const pos = Chess.fromSetup(setup).unwrap();
         console.assert(pos.isCheckmate());
