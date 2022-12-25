@@ -10,7 +10,8 @@ import { Key } from "chessground/types";
 // these styles must be imported somewhere
 import "../../assets/base.css";
 import "../../assets/brown.css";
-import "../../assets/alpha/cburnett.css";
+import "../../assets/piece_set/alpha.css";
+import { MovesHistory } from "./MovesHistory";
 
 type Moves = {
     [key in Key]: Key[]
@@ -18,6 +19,7 @@ type Moves = {
 
 export default function Game() {
     useEffect(() => {
+        // connect to websocket
         const setup = parseFen('r1bqkbnr/ppp2Qpp/2np4/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4').unwrap();
         const pos = Chess.fromSetup(setup).unwrap();
         console.assert(pos.isCheckmate());
@@ -74,8 +76,13 @@ export default function Game() {
             >
 
                 <Nav />
-                <div className="w-full h-full flex items-center justify-center mt-4">
-                    <Chessground width={800} height={800} config={config} />
+                <div className="flex">
+                    <div className="w-full h-full flex items-center justify-center mt-4">
+                        <Chessground width={800} height={800} config={config} />
+                    </div>
+                    <div className="mt-4">
+                        <MovesHistory />
+                    </div>
                 </div>
             </motion.div>
         </>

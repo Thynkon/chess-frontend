@@ -26,7 +26,7 @@ export function PlayAgainstComputer() {
         let form_data = data;
         form_data.duration = form_data.duration * 60;
         console.log(form_data);
-        navigate("/loading");
+        navigate("/play");
         /*
                 api.createGame(form_data).then((response) => {
                     localStorage.setItem('current_route', "/play");

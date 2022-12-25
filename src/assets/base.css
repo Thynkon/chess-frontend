@@ -13,6 +13,7 @@ cg-container {
 }
 
 cg-board {
+  background-image: url("./images/board/blue-marble.jpg");
   position: absolute;
   top: 0;
   left: 0;

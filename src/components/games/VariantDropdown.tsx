@@ -3,7 +3,13 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-export default function VariantDropdown({ field, form, ...props }) {
+interface Props {
+    field?: string;
+    form: any;
+    [key: string]: any;
+}
+
+export default function VariantDropdown({ field, form, ...props }: Props) {
     const variants = ["standard", "crazyhouse"];
     const [variant, setVariant] = React.useState(variants[0]);
 

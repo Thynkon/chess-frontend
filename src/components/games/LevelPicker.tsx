@@ -3,12 +3,18 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { useState } from 'react';
 
-// export default function LevelPicker(props: { values: any[], onChange: any }) {
-export default function LevelPicker({ field, values, form, ...props }) {
+interface Props {
+    field?: string;
+    values: any;
+    form: any;
+    [key: string]: any;
+}
+
+export default function LevelPicker({ field, values, form, ...props }: Props) {
     const [selectedOption, setSelectedOption] = useState(values[0]);
     const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedOption(event.target.value);
-        form.setFieldValue('level', Number(event.target.attributes["x-value"].value));
+        form.setFieldValue('level', Number((event.target.attributes as unknown as { [key: string]: Attr })["x-value"].value));
     }
 
     return (
@@ -17,7 +23,7 @@ export default function LevelPicker({ field, values, form, ...props }) {
                 className={"flex space-x-2 rounded-lg justify-between"}
                 x-data="app"
             >
-                {values.map(option => (
+                {values.map((option: string) => (
                     <div key={option} className="w-full">
                         <input type="radio" name="option" id={String(option)} className="peer hidden" defaultChecked={selectedOption === option} onChange={handleOptionChange} x-value={option} />
                         <label

@@ -67,6 +67,9 @@ export function Nav() {
                     <Dropdown.Item onClick={() => navigate("/profile")}>
                         Profile
                     </Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate("/settings")}>
+                        Settings
+                    </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={() => signOut()}>
                         Log out

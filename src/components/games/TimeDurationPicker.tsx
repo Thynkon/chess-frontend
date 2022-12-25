@@ -4,7 +4,13 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useState } from 'react';
 
-export default function TimeDurationPicker({ field, form, ...props }) {
+interface Props {
+    field?: string;
+    form: any;
+    [key: string]: any;
+}
+
+export default function TimeDurationPicker({ field, form, ...props }: Props) {
     const variants = [5, 10, 15, 20];
     const [variant, setVariant] = useState(variants[0]);
 

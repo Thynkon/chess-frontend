@@ -13,6 +13,7 @@ import { IoIosSkipBackward, IoIosSkipForward } from "react-icons/io"
 import "chessground/assets/chessground.base.css";
 import "chessground/assets/chessground.brown.css";
 import "chessground/assets/chessground.cburnett.css";
+import { MovesHistory } from "../games/MovesHistory";
 
 
 function GameCard() {
@@ -76,28 +77,7 @@ export function Games() {
                 <Chessground width={800} height={800} config={config} />
             </div>
             <div className="flex justify-center">
-                <div>
-                    <Table className="w-80">
-                        <Table.Head>
-                            <Table.HeadCell className="cursor-pointer">
-                                <IoIosSkipBackward />
-                            </Table.HeadCell>
-                            <Table.HeadCell className="cursor-pointer">
-                                <IoIosSkipForward />
-                            </Table.HeadCell>
-                        </Table.Head>
-                        <Table.Body className="divide-y">
-                            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                                <Table.Cell className="cursor-pointer hover:bg-slate-200">
-                                    e4
-                                </Table.Cell>
-                                <Table.Cell className="cursor-pointer hover:bg-slate-200">
-                                    e5
-                                </Table.Cell>
-                            </Table.Row>
-                        </Table.Body>
-                    </Table>
-                </div>
+                <MovesHistory />
             </div>
         </div>
     );
