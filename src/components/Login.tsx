@@ -2,8 +2,7 @@ import { Formik } from "formik";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import Api from "../api/requests";
 import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
-import { Alert } from "@mui/material";
-import TransitionAlert from "./TransactionAlert";
+import { Alert } from "flowbite-react";
 
 const api = new Api();
 
@@ -92,7 +91,9 @@ export function Login() {
 
                                     <form className="w-full flex flex-col space-y-6" onSubmit={handleSubmit}>
                                         {errors.api ? (
-                                            <TransitionAlert message={errors.api} severity="error" />
+                                            <Alert color="failure">
+                                                {errors.api && touched.api && errors.api}
+                                            </Alert>
                                         ) : ""}
 
                                         <div>
@@ -100,7 +101,7 @@ export function Login() {
                                             <input name="username" type="text" className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-lg" onChange={handleChange} onBlur={handleBlur} value={values.username} />
                                         </div>
                                         {errors.username ? (
-                                            <Alert severity="error">
+                                            <Alert color="failure">
                                                 {errors.username && touched.username && errors.username}
                                             </Alert>
                                         ) : ""}
@@ -111,7 +112,7 @@ export function Login() {
                                         </div>
 
                                         {errors.password ? (
-                                            <Alert severity="error">
+                                            <Alert color="failure">
                                                 {errors.password && touched.password && errors.password}
                                             </Alert>
                                         ) : ""}

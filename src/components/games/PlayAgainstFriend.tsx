@@ -1,11 +1,10 @@
-import { Alert } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 import LevelPicker from "./LevelPicker";
 import Api from "../../api/requests";
 import VariantDropdown from "./VariantDropdown";
 import TimeDurationPicker from "./TimeDurationPicker";
-import RankType from "./RankType";
+import { Alert } from "flowbite-react";
 
 const api = new Api();
 
@@ -55,7 +54,7 @@ export function PlayAgainstFriend() {
     }
     return (
         <div className="flex justify-center">
-            <div className="p-6 w-96">
+            <div className="p-6 w-96 bg-gray-50 rounded-md shadow-md">
                 <Formik
                     initialValues={{ variant: '', level: 1, duration: 5 }}
                     validate={validateForm}
@@ -82,7 +81,7 @@ export function PlayAgainstFriend() {
                                     <LevelPicker values={["Casual", "Ranked"]} field={undefined} form={undefined} />
                                 </div>
                                 {errors.level ? (
-                                    <Alert severity="error">
+                                    <Alert color="failure">
                                         {errors.level && touched.level && errors.level}
                                     </Alert>
                                 ) : ""}
@@ -92,7 +91,7 @@ export function PlayAgainstFriend() {
                                     <Field name="duration" component={TimeDurationPicker} />
                                 </div>
                                 {errors.duration ? (
-                                    <Alert severity="error">
+                                    <Alert color="failure">
                                         {errors.duration && touched.duration && errors.duration}
                                     </Alert>
                                 ) : ""}

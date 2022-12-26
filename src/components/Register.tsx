@@ -1,9 +1,8 @@
 import { Formik } from "formik";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Api from "../api/requests";
-import { Alert } from "@mui/material";
-import TransitionAlert from "./TransactionAlert";
 import { useState } from "react";
+import { Alert } from "flowbite-react";
 
 const api = new Api();
 
@@ -79,7 +78,9 @@ function Register() {
 
                                 <form className="w-full flex flex-col space-y-6" onSubmit={handleSubmit}>
                                     {apiError ? (
-                                        <TransitionAlert message={apiError} severity="error" />
+                                        <Alert color="failure">
+                                            {errors.api}
+                                        </Alert>
                                     ) : ""}
 
                                     <div>
@@ -87,8 +88,8 @@ function Register() {
                                         <input name="username" type="text" className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-lg" onChange={handleChange} onBlur={handleBlur} value={values.username} />
                                     </div>
                                     {errors.username ? (
-                                        <Alert severity="error">
-                                            {errors.username && touched.username && errors.username}
+                                        <Alert color="failure">
+                                            {errors.username}
                                         </Alert>
                                     ) : ""}
 
@@ -98,8 +99,8 @@ function Register() {
                                     </div>
 
                                     {errors.password ? (
-                                        <Alert severity="error">
-                                            {errors.password && touched.password && errors.password}
+                                        <Alert color="failure">
+                                            {errors.password}
                                         </Alert>
                                     ) : ""}
 
@@ -109,8 +110,8 @@ function Register() {
                                     </div>
 
                                     {errors.password_confirmation ? (
-                                        <Alert severity="error">
-                                            {errors.password_confirmation && touched.password_confirmation && errors.password_confirmation}
+                                        <Alert color="failure">
+                                            {errors.password_confirmation}
                                         </Alert>
                                     ) : ""}
 

@@ -1,10 +1,10 @@
-import { Alert } from "@mui/material";
 import { Field, useFormik, FormikProvider } from "formik";
 import { useNavigate, useLocation } from "react-router-dom";
 import LevelPicker from "./LevelPicker";
 import Api from "../../api/requests";
 import VariantDropdown from "./VariantDropdown";
 import TimeDurationPicker from "./TimeDurationPicker";
+import { Alert } from "flowbite-react";
 
 const api = new Api();
 
@@ -75,7 +75,7 @@ export function PlayAgainstComputer() {
 
     return (
         <FormikProvider value={formik}>
-            <div className="flex justify-center">
+            <div className="flex justify-center w-96">
                 <div className="p-6 w-96 bg-gray-50 rounded-md shadow-md">
                     <form onSubmit={formik.handleSubmit} className="w-full">
                         <div className="py-6 text-center">
@@ -89,7 +89,7 @@ export function PlayAgainstComputer() {
                             </div>
 
                             {formik.errors.variant ? (
-                                <Alert severity="error">
+                                <Alert color="failure">
                                     {formik.errors.variant}
                                 </Alert>
                             ) : ""}
@@ -99,7 +99,7 @@ export function PlayAgainstComputer() {
                                 <Field name="level" component={LevelPicker} values={Array.from({ length: 4 }, (value, index) => index + 1)} />
                             </div>
                             {formik.errors.level ? (
-                                <Alert severity="error">
+                                <Alert color="failure">
                                     {formik.errors.level}
                                 </Alert>
                             ) : ""}
@@ -109,7 +109,7 @@ export function PlayAgainstComputer() {
                                 <Field name="duration" component={TimeDurationPicker} />
                             </div>
                             {formik.errors.duration ? (
-                                <Alert severity="error">
+                                <Alert color="failure">
                                     {formik.errors.duration}
                                 </Alert>
                             ) : ""}
@@ -119,8 +119,8 @@ export function PlayAgainstComputer() {
                             </button>
                         </div>
                     </form>
-                </div >
-            </div >
-        </FormikProvider>
+                </div>
+            </div>
+        </FormikProvider >
     );
 }

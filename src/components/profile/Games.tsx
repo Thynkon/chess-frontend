@@ -10,9 +10,9 @@ import { Key } from "chessground/types";
 import { IoIosSkipBackward, IoIosSkipForward } from "react-icons/io"
 
 // these styles must be imported somewhere
-import "chessground/assets/chessground.base.css";
-import "chessground/assets/chessground.brown.css";
-import "chessground/assets/chessground.cburnett.css";
+import "../../assets/base.css";
+import "../../assets/brown.css";
+import "../../assets/piece_set/alpha.css";
 import { MovesHistory } from "../games/MovesHistory";
 
 

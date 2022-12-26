@@ -1,6 +1,4 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
 import { useState } from 'react';
 
 interface Props {
@@ -18,7 +16,7 @@ export default function LevelPicker({ field, values, form, ...props }: Props) {
     }
 
     return (
-        <Box className="w-full">
+        <div className="w-full">
             <div
                 className={"flex space-x-2 rounded-lg justify-between"}
                 x-data="app"
@@ -35,6 +33,6 @@ export default function LevelPicker({ field, values, form, ...props }: Props) {
                     </div>
                 ))}
             </div>
-        </Box >
+        </div >
     );
 }

@@ -3,9 +3,6 @@ import { AuthProvider } from 'react-auth-kit'
 import RouteComponent from './routes/routes';
 
 import './App.css';
-import "chessground/assets/chessground.base.css";
-import "chessground/assets/chessground.brown.css";
-import "chessground/assets/chessground.cburnett.css";
 import { AnimatePresence } from 'framer-motion';
 
 export function App() {
@@ -13,7 +10,7 @@ export function App() {
     <AuthProvider
       authType={'localstorage'}
       authName={'_auth'}
-      >
+    >
       <AnimatePresence>
         <RouteComponent />
       </AnimatePresence>
