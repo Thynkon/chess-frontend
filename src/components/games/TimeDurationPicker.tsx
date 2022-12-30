@@ -9,8 +9,11 @@ interface Props {
 }
 
 export default function TimeDurationPicker({ field, form, ...props }: Props) {
-    const variants = [5, 10, 15, 20];
-    const [variant, setVariant] = useState(variants[0]);
+    const durations: number[] = [];
+    for (let i = 5; i <= 20; i += 5) {
+        durations.push(i * 60);
+    }
+    const [variant, setVariant] = useState(durations[0]);
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setVariant(Number(event.target.value));
@@ -24,8 +27,8 @@ export default function TimeDurationPicker({ field, form, ...props }: Props) {
                 onChange={handleChange}
                 name="duration"
             >
-                {variants.map((duration, index) => (
-                    <option key={index} value={duration}>{duration} minutes</option>
+                {durations.map((duration, index) => (
+                    <option key={index} value={duration}>{duration / 60} minutes</option>
                 ))}
             </Select>
         </div>

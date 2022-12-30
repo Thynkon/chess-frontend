@@ -46,6 +46,10 @@ export default class Api {
         return (await this.init()).post("/register", params);
     };
 
+    getVariants = async () => {
+        return (await this.init()).get("/variants");
+    };
+
     createGame = async (params: object) => {
         return (await this.init()).post("/games", params);
     };

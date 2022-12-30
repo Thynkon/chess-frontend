@@ -4,11 +4,11 @@ import { Select } from 'flowbite-react';
 interface Props {
     field?: string;
     form: any;
+    variants: string[];
     [key: string]: any;
 }
 
-export default function VariantDropdown({ field, form, ...props }: Props) {
-    const variants = ["standard", "crazyhouse"];
+export default function VariantDropdown({ field, form, variants, ...props }: Props) {
     const [variant, setVariant] = React.useState(variants[0]);
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

@@ -12,6 +12,7 @@ import "../../assets/base.css";
 import "../../assets/brown.css";
 import "../../assets/piece_set/alpha.css";
 import { MovesHistory } from "./MovesHistory";
+import { useLocation } from "react-router-dom";
 
 type Moves = {
     [key in Key]: Key[]
@@ -24,6 +25,10 @@ export default function Game() {
         const pos = Chess.fromSetup(setup).unwrap();
         console.assert(pos.isCheckmate());
     });
+
+    const location = useLocation();
+    console.log("ARGS ==> ");
+    console.log(location.state);
 
     const moves = new Map();
 

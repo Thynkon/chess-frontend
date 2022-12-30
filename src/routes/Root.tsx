@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import Slider from "react-slick";
 import { Nav } from "../components/Nav";
-import { PlayAgainstComputer } from "../components/games/PlayAgainstComputer";
+import PlayAgainstComputer from "../components/games/PlayAgainstComputer";
 import { PlayAgainstFriend } from "../components/games/PlayAgainstFriend";
 
 import { RefObject, useRef } from "react";
