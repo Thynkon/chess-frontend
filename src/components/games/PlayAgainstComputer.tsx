@@ -27,6 +27,7 @@ interface FormFields {
 
 interface PlayArgs {
     game_id: number
+    user_id: number
 }
 
 function PlayAgainstComputer() {
@@ -37,13 +38,17 @@ function PlayAgainstComputer() {
         let form_data = data;
         form_data.type = "pvc";
         api.createGame(form_data).then((response) => {
-            console.log("GOT RESPONSE ==> ");
-            console.log(response.data);
             let args: PlayArgs = {
-                game_id: response.data.data.id
+                game_id: response.data.data.id,
+                user_id: response.data.data.user_id
             }
-            navigate("/play", { state: args });
-            setSubmitting(false);
+
+            api.createGameParticipation(args).then((response) => {
+                navigate("/play", { state: args });
+                setSubmitting(false);
+            }).catch(error => {
+            }).finally(() => {
+            });
         }).catch(error => {
             console.log(error.response);
             setErrors({

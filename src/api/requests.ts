@@ -50,6 +50,10 @@ export default class Api {
         return (await this.init()).get("/variants");
     };
 
+    createGameParticipation = async (params: object) => {
+        return (await this.init()).post("/game_participations", params);
+    };
+
     createGame = async (params: object) => {
         return (await this.init()).post("/games", params);
     };
