@@ -1,7 +1,6 @@
 import { Nav } from "../Nav";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
-import { parseFen } from "chessops/fen";
+import { useEffect, useMemo, useState } from "react";
 import { Chess } from "chessops";
 import { Config } from 'chessground/config';
 import Chessground from "@react-chess/chessground";
@@ -12,44 +11,77 @@ import "../../assets/base.css";
 import "../../assets/brown.css";
 import "../../assets/piece_set/alpha.css";
 import { MovesHistory } from "./MovesHistory";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import { Channel, Socket } from "phoenix";
 
 type Moves = {
     [key in Key]: Key[]
 }
 
+type HistoryMoves = {
+    uci: string[],
+    player: string[]
+}
+
 export default function Game() {
+    const { state } = useLocation();
+    const { game_id, user_id } = state;
+    const [legalMoves, setLegalMoves] = useState(new Map());
+    const [fen, setFen] = useState("");
+    const [socket, setSocket] = useState<Socket | null>(null);
+    const [channel, setChannel] = useState<Channel | null>(null);
+    const [orientation, setOrientation] = useState<"white" | "black" | undefined>("white");
+    const [movesHistory, setMovesHistory] = useState<HistoryMoves>({ "player": [], "uci": [] });
+
     useEffect(() => {
-        // connect to websocket
-        const setup = parseFen('r1bqkbnr/ppp2Qpp/2np4/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4').unwrap();
-        const pos = Chess.fromSetup(setup).unwrap();
-        console.assert(pos.isCheckmate());
-    });
+        if (socket === null) {
+            // Create a new socket object and assign it to the socket state variable
+            const newSocket = new Socket('ws://localhost:4000/socket', { params: { token: null } });
+            setSocket(newSocket);
 
-    const location = useLocation();
-    console.log("ARGS ==> ");
-    console.log(location.state);
+            // Connect the socket and join the channel
+            newSocket.connect();
+            const channel = newSocket.channel('pvc_game:lobby', {});
 
-    const moves = new Map();
+            channel.join()
+                .receive("ok", resp => { console.log("Joined successfully", resp) })
+                .receive("error", resp => { console.log("Unable to join", resp) })
 
-    // Update the moves variable with a new object literal that conforms to the Moves type
-    moves.set('h2', ['h3', 'h4']);
-    moves.set('g2', ['g3', 'g4']);
-    moves.set('f2', ['f3', 'f4']);
-    moves.set('e2', ['e3', 'e4']);
-    moves.set('d2', ['d3', 'd4']);
-    moves.set('c2', ['c3', 'c4']);
-    moves.set('b2', ['b3', 'b4']);
-    moves.set('a2', ['a3', 'a4']);
-    moves.set('g1', ['h3', 'f3']);
-    moves.set('b1', ['c3', 'a3']);
+            channel.push("init_game", { game_id: game_id });
+
+            channel?.on("init_game", payload => {
+                console.log("Received from init_game ==>");
+                console.log(payload);
+                const lm = new Map(Object.entries(payload.legal_moves));
+                setLegalMoves(lm);
+                setOrientation(payload.orientation);
+            });
+
+            channel?.on("play_game", payload => {
+                setFen(payload.fen);
+                const lm = new Map(Object.entries(payload.legal_moves));
+                setLegalMoves(lm);
+                // should receive uci move and fen
+                console.log(payload);
+            });
+            setChannel(channel);
+        }
+    }, [orientation, legalMoves]);
 
     const config: Config = {
+        fen: fen,
+        orientation: orientation,
         coordinates: true,
         events: {
             move: function (origin, destination, captured_piece) {
-                // check if move is valid and update fen and available moves
                 console.log("Original move: " + origin + ", destination: " + destination + ",captured_piece: " + captured_piece);
+                // check if move is valid and update fen and available moves
+                channel?.push("play_game", { from: origin, to: destination })
+                setMovesHistory(prevState => ({
+                    ...prevState,
+                    player: [...prevState.player, destination],
+                    uci: [...prevState.uci],
+                }));
             }
         },
         highlight: {
@@ -63,11 +95,10 @@ export default function Game() {
         movable: {
             free: false,
             showDests: true,
-            dests: moves
+            dests: legalMoves
         },
         draggable: {
             enabled: true,
-            // showGhost: true,
         }
     }
 
@@ -86,7 +117,7 @@ export default function Game() {
                         <Chessground width={800} height={800} config={config} />
                     </div>
                     <div className="mt-4">
-                        <MovesHistory />
+                        <MovesHistory movesHistory={movesHistory} />
                     </div>
                 </div>
             </motion.div>

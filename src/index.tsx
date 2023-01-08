@@ -8,13 +8,13 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+//<div className='px-6'>
+//<React.StrictMode>
 root.render(
   <div className='px-6'>
-    <React.StrictMode>
-      <BrowserRouter>
-        <App/>
-      </BrowserRouter>
-    </React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </div>
 );
 

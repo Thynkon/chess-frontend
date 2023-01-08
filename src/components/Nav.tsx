@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Dropdown, Navbar } from 'flowbite-react';
 
 import { useAuthUser } from 'react-auth-kit'
+import { useMemo } from 'react';
 
 const pages = ['Games', 'Stats', 'Other players'];
 
@@ -13,6 +14,7 @@ export function Nav() {
     const signOut = useSignOut();
     const navigate = useNavigate();
     const auth = useAuthUser();
+    const authUser = useMemo(() => auth(), []);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -29,8 +31,12 @@ export function Nav() {
         setAnchorElUser(null);
     };
 
+    const handleLogout = () => {
+        signOut();
+    };
+
     React.useEffect(() => {
-        console.log(auth());
+        console.log(authUser);
     });
 
     return (
@@ -58,7 +64,7 @@ export function Nav() {
                     <Dropdown.Header>
                         <span className="block text-sm">
                             Bonnie Green
-                            {auth()?.user}
+                            {/*auth()?.user*/}
                         </span>
                         <span className="block truncate text-sm font-medium">
                             name@flowbite.com
@@ -71,7 +77,7 @@ export function Nav() {
                         Settings
                     </Dropdown.Item>
                     <Dropdown.Divider />
-                    <Dropdown.Item onClick={() => signOut()}>
+                    <Dropdown.Item onClick={handleLogout}>
                         Log out
                     </Dropdown.Item>
                 </Dropdown>
