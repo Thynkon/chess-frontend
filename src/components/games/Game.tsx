@@ -11,8 +11,9 @@ import "../../assets/base.css";
 import "../../assets/brown.css";
 import "../../assets/piece_set/alpha.css";
 import { MovesHistory } from "./MovesHistory";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Channel, Socket } from "phoenix";
+import { Button, Modal } from "flowbite-react";
 
 type Moves = {
     [key in Key]: Key[]
@@ -32,6 +33,12 @@ export default function Game() {
     const [channel, setChannel] = useState<Channel | null>(null);
     const [orientation, setOrientation] = useState<"white" | "black" | undefined>("white");
     const [movesHistory, setMovesHistory] = useState<HistoryMoves>({ "player": [], "uci": [] });
+    const [gameOver, setGameOver] = useState(false);
+
+    const handleRestart = () => {
+        // Restart game logic here
+        setGameOver(false);
+    };
 
     useEffect(() => {
         if (socket === null) {
@@ -58,30 +65,44 @@ export default function Game() {
             });
 
             channel?.on("play_game", payload => {
-                setFen(payload.fen);
-                const lm = new Map(Object.entries(payload.legal_moves));
-                setLegalMoves(lm);
-                // should receive uci move and fen
-                console.log(payload);
+                if (payload.status === "checkmate") {
+                    setGameOver(true);
+                } else {
+                    const lm = new Map(Object.entries(payload.legal_moves));
+                    setLegalMoves(lm);
+                    // should receive uci move and fen
+                    console.log("Received fen ==> " + payload.fen);
+                    setFen(payload.fen);
+                }
             });
             setChannel(channel);
         }
-    }, [orientation, legalMoves]);
+    }, [orientation, legalMoves, fen, movesHistory]);
 
     const config: Config = {
         fen: fen,
         orientation: orientation,
         coordinates: true,
-        events: {
-            move: function (origin, destination, captured_piece) {
-                console.log("Original move: " + origin + ", destination: " + destination + ",captured_piece: " + captured_piece);
-                // check if move is valid and update fen and available moves
-                channel?.push("play_game", { from: origin, to: destination })
-                setMovesHistory(prevState => ({
-                    ...prevState,
-                    player: [...prevState.player, destination],
-                    uci: [...prevState.uci],
-                }));
+        movable: {
+            free: false,
+            showDests: true,
+            dests: legalMoves,
+            events: {
+                after: function (origin, destination, captured_piece) {
+                    console.log("Original move: " + origin + ", destination: " + destination + ",captured_piece: " + captured_piece);
+                    // check if move is valid and update fen and available moves
+                    channel?.push("play_game", { from: origin, to: destination })
+                    setMovesHistory(prevState => ({
+                        ...prevState,
+                        player: [...prevState.player, destination],
+                        uci: [...prevState.uci],
+                    }));
+
+                    // cleaning FEN, if it is not cleaned, after this method,
+                    // ReactJS will still use the old FEN which will cause a rollback
+                    // on the chessboard
+                    setFen("");
+                }
             }
         },
         highlight: {
@@ -92,14 +113,39 @@ export default function Game() {
             enabled: true,
             duration: 500, // animation when piece is moved from wrong position
         },
-        movable: {
-            free: false,
-            showDests: true,
-            dests: legalMoves
-        },
         draggable: {
             enabled: true,
         }
+    }
+
+    const GameOver = ({ onRestart }: any) => {
+        const navigate = useNavigate();
+        return (
+            <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="game-over"
+            >
+                <Modal show={true}>
+                    <Modal.Header>Game over</Modal.Header>
+                    <Modal.Body>
+                        <div className="space-y-6">
+                            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">You lost against Stockfish level</p>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={handleRestart}>Restart</Button>
+                        <Button
+                            color="gray"
+                            onClick={() => { navigate("/") }}
+                        >
+                            Return to the main menu
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </motion.div>
+        );
     }
 
     return (
@@ -113,12 +159,16 @@ export default function Game() {
 
                 <Nav />
                 <div className="flex">
-                    <div className="w-full h-full flex items-center justify-center mt-4">
-                        <Chessground width={800} height={800} config={config} />
-                    </div>
-                    <div className="mt-4">
-                        <MovesHistory movesHistory={movesHistory} />
-                    </div>
+                    {gameOver
+                        ? <GameOver onRestart={handleRestart} />
+                        : <>
+                            <div className="w-full h-full flex items-center justify-center mt-4">
+                                <Chessground width={800} height={800} config={config} />
+                            </div>
+                            <div className="mt-4">
+                            </div>
+                        </>
+                    }
                 </div>
             </motion.div>
         </>
