@@ -1,7 +1,6 @@
 import { Nav } from "../Nav";
 import { motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
-import { Chess } from "chessops";
+import { useEffect, useState } from "react";
 import { Config } from 'chessground/config';
 import Chessground from "@react-chess/chessground";
 import { Key } from "chessground/types";
@@ -11,7 +10,7 @@ import "../../assets/base.css";
 import "../../assets/brown.css";
 import "../../assets/piece_set/alpha.css";
 import { MovesHistory } from "./MovesHistory";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Channel, Socket } from "phoenix";
 import { Button, Modal } from "flowbite-react";
 
@@ -57,10 +56,9 @@ export default function Game() {
             channel.push("init_game", { game_id: game_id });
 
             channel?.on("init_game", payload => {
-                console.log("Received from init_game ==>");
-                console.log(payload);
                 const lm = new Map(Object.entries(payload.legal_moves));
                 setLegalMoves(lm);
+                setFen(payload.fen);
                 setOrientation(payload.orientation);
             });
 
@@ -70,9 +68,12 @@ export default function Game() {
                 } else {
                     const lm = new Map(Object.entries(payload.legal_moves));
                     setLegalMoves(lm);
-                    // should receive uci move and fen
-                    console.log("Received fen ==> " + payload.fen);
                     setFen(payload.fen);
+                    setMovesHistory(prevState => ({
+                        ...prevState,
+                        player: [...prevState.player],
+                        uci: [...prevState.uci, payload.uciMove],
+                    }));
                 }
             });
             setChannel(channel);
@@ -90,7 +91,6 @@ export default function Game() {
             events: {
                 after: function (origin, destination, captured_piece) {
                     console.log("Original move: " + origin + ", destination: " + destination + ",captured_piece: " + captured_piece);
-                    // check if move is valid and update fen and available moves
                     channel?.push("play_game", { from: origin, to: destination })
                     setMovesHistory(prevState => ({
                         ...prevState,
@@ -115,6 +115,10 @@ export default function Game() {
         },
         draggable: {
             enabled: true,
+        },
+        premovable: {
+            enabled: true,
+            showDests: true,
         }
     }
 
@@ -124,7 +128,7 @@ export default function Game() {
             <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 1.0 }}
                 className="game-over"
             >
                 <Modal show={true} onClose={() => navigate("/")}>
@@ -166,6 +170,7 @@ export default function Game() {
                                 <Chessground width={800} height={800} config={config} />
                             </div>
                             <div className="mt-4">
+                                <MovesHistory movesHistory={movesHistory} />
                             </div>
                         </>
                     }

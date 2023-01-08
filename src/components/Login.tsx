@@ -1,14 +1,10 @@
-import { Formik } from "formik";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import Api from "../api/requests";
-import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
 import { Alert } from "flowbite-react";
+import { Formik } from "formik";
+import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
+import { Link, Navigate, useLocation } from "react-router-dom";
+import Api from "../api/requests";
 
 const api = new Api();
-
-interface FormData {
-    [key: string]: any
-}
 
 interface FormFields {
     username?: string,
@@ -16,7 +12,6 @@ interface FormFields {
 }
 
 export function Login() {
-    const navigate = useNavigate();
     const { state } = useLocation();
 
     const isAuthenticated = useIsAuthenticated()
