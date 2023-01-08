@@ -14,7 +14,6 @@ export function Nav() {
     const signOut = useSignOut();
     const navigate = useNavigate();
     const auth = useAuthUser();
-    const authUser = useMemo(() => auth(), []);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -34,10 +33,6 @@ export function Nav() {
     const handleLogout = () => {
         signOut();
     };
-
-    React.useEffect(() => {
-        console.log(authUser);
-    });
 
     return (
         <Navbar
@@ -62,12 +57,8 @@ export function Nav() {
                     label={"Settings"}
                 >
                     <Dropdown.Header>
-                        <span className="block text-sm">
-                            Bonnie Green
-                            {/*auth()?.user*/}
-                        </span>
                         <span className="block truncate text-sm font-medium">
-                            name@flowbite.com
+                            {auth()?.username}
                         </span>
                     </Dropdown.Header>
                     <Dropdown.Item onClick={() => navigate("/profile")}>

@@ -127,7 +127,7 @@ export default function Game() {
                 transition={{ duration: 0.5 }}
                 className="game-over"
             >
-                <Modal show={true}>
+                <Modal show={true} onClose={() => navigate("/")}>
                     <Modal.Header>Game over</Modal.Header>
                     <Modal.Body>
                         <div className="space-y-6">
@@ -138,7 +138,7 @@ export default function Game() {
                         <Button onClick={handleRestart}>Restart</Button>
                         <Button
                             color="gray"
-                            onClick={() => { navigate("/") }}
+                            onClick={() => navigate("/")}
                         >
                             Return to the main menu
                         </Button>

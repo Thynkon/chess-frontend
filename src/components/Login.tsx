@@ -24,16 +24,15 @@ export function Login() {
 
     const handleLogin = (credentials: { username: string, password: string }, { setSubmitting, setErrors }: any) => {
         api.getAuthToken(credentials).then((response) => {
-            let authToken = response.data;
-            console.log(authToken.token);
+            let body = response.data;
             if (signIn(
                 {
-                    token: authToken.token,
+                    token: body.token,
+                    authState: body.user,
                     expiresIn: 60,
                     tokenType: "Bearer",
                 }
             )) {
-                // Redirect or do-something
             } else {
                 //Throw error
             }
