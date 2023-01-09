@@ -1,6 +1,6 @@
 import { Nav } from "../Nav";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Config } from 'chessground/config';
 import Chessground from "@react-chess/chessground";
 import { Key } from "chessground/types";
@@ -13,6 +13,8 @@ import { MovesHistory } from "./MovesHistory";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Channel, Socket } from "phoenix";
 import { Button, Modal } from "flowbite-react";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import Loading from "./Loading";
 
 type Moves = {
     [key in Key]: Key[]
@@ -25,7 +27,7 @@ type HistoryMoves = {
 
 export default function Game() {
     const { state } = useLocation();
-    const { game_id, user_id } = state;
+    const { game_id, user_id, duration } = state;
     const [legalMoves, setLegalMoves] = useState(new Map());
     const [fen, setFen] = useState("");
     const [socket, setSocket] = useState<Socket | null>(null);
@@ -33,11 +35,9 @@ export default function Game() {
     const [orientation, setOrientation] = useState<"white" | "black" | undefined>("white");
     const [movesHistory, setMovesHistory] = useState<HistoryMoves>({ "player": [], "uci": [] });
     const [gameOver, setGameOver] = useState(false);
-
-    const handleRestart = () => {
-        // Restart game logic here
-        setGameOver(false);
-    };
+    const [spentTime, setSpentTime] = useState<number>(0);
+    const [dur, setDur] = useState<number>(duration);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (socket === null) {
@@ -77,8 +77,30 @@ export default function Game() {
                 }
             });
             setChannel(channel);
+
+            console.log("Setting spent time to => " + dur);
+            setSpentTime(dur);
         }
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1500);
+
+        return () => {
+            clearTimeout(timer);
+        };
     }, [orientation, legalMoves, fen, movesHistory]);
+
+    const handleRestart = () => {
+        // Restart game logic here
+        setGameOver(false);
+    };
+
+    const handleLostByTime = () => {
+        console.log("You lost by time!");
+        alert("You lost by time!");
+        // Restart game logic here
+        setGameOver(false);
+    };
 
     const config: Config = {
         fen: fen,
@@ -152,30 +174,94 @@ export default function Game() {
         );
     }
 
+    const formatSeconds = (remainingTime: number) => {
+        const minutes = `0${Math.floor(remainingTime / 60)}`.slice(-2);
+        const seconds = `0${remainingTime % 60}`.slice(-2);
+
+        return `${minutes}:${seconds}`
+    }
+
+    function RenderTime({ remainingTime }: any) {
+        if (remainingTime === 0) {
+            return <div className="timer">Too lale...</div>;
+        }
+
+        return (
+            <div className="text-4xl">
+                {formatSeconds(remainingTime)}
+            </div>
+        );
+    };
+
+    const CountdownTimer = memo(({ duration }: any) => {
+        const [isPlaying, setIsPlaying] = useState(true);
+
+        useEffect(() => {
+            console.log("after rendering countdown timer");
+        })
+
+        return (
+            <div className='flex justify-center items-center pt-1 p-2 text-center text-gray-700 max-h-40'>
+                <CountdownCircleTimer
+                    isPlaying={isPlaying}
+                    duration={duration}
+                    colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                    colorsTime={[10, 6, 3, 0]}
+                    onComplete={() => handleLostByTime()}
+                    updateInterval={1}
+                    onUpdate={(remainingTime: number) => {
+                        console.log("ON UPDATE: " + remainingTime)
+                        //setSpentTime(spentTime - 1);
+                    }}
+                >
+                    {({ remainingTime, color }: any) => (
+                        <div className='text-sm'>
+                            <RenderTime remainingTime={remainingTime} />
+                        </div>
+                    )
+                    }
+                </CountdownCircleTimer>
+            </div>
+        )
+    });
+
+    console.log("Going to pass duration as ==> " + dur);
+    console.log("Current spent time is " + spentTime);
+
     return (
         <>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.75, ease: "easeOut" }}
-            >
-
-                <Nav />
-                <div className="flex">
-                    {gameOver
-                        ? <GameOver onRestart={handleRestart} />
-                        : <>
-                            <div className="w-full h-full flex items-center justify-center mt-4">
-                                <Chessground width={800} height={800} config={config} />
-                            </div>
-                            <div className="mt-4">
+            {loading
+                ?
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                >
+                    <Loading className="h-1/4 w-full" />
+                </motion.div>
+                :
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.75, ease: "easeOut" }}
+                >
+                    <Nav />
+                    <div className="flex mt-4">
+                        {gameOver
+                            ? <GameOver onRestart={handleRestart} />
+                            : <>
+                                <CountdownTimer duration={dur} />
+                                <div className="w-full h-full flex items-center justify-center">
+                                    <Chessground width={800} height={800} config={config} />
+                                </div>
                                 <MovesHistory movesHistory={movesHistory} />
-                            </div>
-                        </>
-                    }
-                </div>
-            </motion.div>
+                            </>
+                        }
+                    </div>
+                </motion.div>
+            }
         </>
     );
 }

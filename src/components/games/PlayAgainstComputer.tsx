@@ -26,8 +26,9 @@ interface FormFields {
 }
 
 interface PlayArgs {
-    game_id: number
-    user_id: number
+    game_id: number,
+    user_id: number,
+    duration: number
 }
 
 function PlayAgainstComputer() {
@@ -40,7 +41,8 @@ function PlayAgainstComputer() {
         api.createGame(form_data).then((response) => {
             let args: PlayArgs = {
                 game_id: response.data.data.id,
-                user_id: response.data.data.user_id
+                user_id: response.data.data.user_id,
+                duration: form_data.duration,
             }
 
             api.createGameParticipation(args).then((response) => {
