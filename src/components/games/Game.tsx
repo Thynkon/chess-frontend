@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { memo, useEffect, useState } from "react";
 import { Config } from 'chessground/config';
 import Chessground from "@react-chess/chessground";
-import { Key } from "chessground/types";
+import { Key, Timer } from "chessground/types";
 
 // these styles must be imported somewhere
 import "../../assets/base.css";
@@ -15,6 +15,7 @@ import { Channel, Socket } from "phoenix";
 import { Button, Modal } from "flowbite-react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import Loading from "./Loading";
+import anime from "animejs";
 
 type Moves = {
     [key in Key]: Key[]
@@ -38,6 +39,7 @@ export default function Game() {
     const [spentTime, setSpentTime] = useState<number>(0);
     const [dur, setDur] = useState<number>(duration);
     const [loading, setLoading] = useState(true);
+    const [displayHelp, setDisplayHelp] = useState(false);
 
     useEffect(() => {
         if (socket === null) {
@@ -85,6 +87,19 @@ export default function Game() {
             setLoading(false);
         }, 1500);
 
+        document.addEventListener("keydown", (event: KeyboardEvent) => {
+            if (event.key === "F1") {
+                event.preventDefault();
+                setDisplayHelp(true);
+            }
+        }, true);
+
+        anime({
+            targets: '.wrapper',
+            translateY: 25,
+            delay: anime.stagger(1000, { from: 'center' }),
+        });
+
         return () => {
             clearTimeout(timer);
         };
@@ -124,7 +139,7 @@ export default function Game() {
                     // ReactJS will still use the old FEN which will cause a rollback
                     // on the chessboard
                     setFen("");
-                }
+                },
             }
         },
         highlight: {
@@ -141,7 +156,7 @@ export default function Game() {
         premovable: {
             enabled: true,
             showDests: true,
-        }
+        },
     }
 
     const GameOver = ({ onRestart }: any) => {
@@ -151,14 +166,11 @@ export default function Game() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 1.0 }}
-                className="game-over"
             >
                 <Modal show={true} onClose={() => navigate("/")}>
-                    <Modal.Header>Game over</Modal.Header>
-                    <Modal.Body>
-                        <div className="space-y-6">
-                            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">You lost against Stockfish level</p>
-                        </div>
+                    <Modal.Header>Game over!</Modal.Header>
+                    <Modal.Body className="p-0">
+                        <img src="/assets/images/game_over.jpg" className="w-full h-full" />
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={handleRestart}>Restart</Button>
@@ -197,11 +209,10 @@ export default function Game() {
         const [isPlaying, setIsPlaying] = useState(true);
 
         useEffect(() => {
-            console.log("after rendering countdown timer");
         })
 
         return (
-            <div className='flex justify-center items-center pt-1 p-2 text-center text-gray-700 max-h-40'>
+            <div className='flex justify-center items-center pt-1 p-2 text-center text-gray-700 max-h-40 countdown-timer'>
                 <CountdownCircleTimer
                     isPlaying={isPlaying}
                     duration={duration}
@@ -210,7 +221,6 @@ export default function Game() {
                     onComplete={() => handleLostByTime()}
                     updateInterval={1}
                     onUpdate={(remainingTime: number) => {
-                        console.log("ON UPDATE: " + remainingTime)
                         //setSpentTime(spentTime - 1);
                     }}
                 >
@@ -225,8 +235,26 @@ export default function Game() {
         )
     });
 
-    console.log("Going to pass duration as ==> " + dur);
-    console.log("Current spent time is " + spentTime);
+    const DisplayHelp = () => {
+        const navigate = useNavigate();
+        return (
+            <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 1.0 }}
+            >
+                <Modal show={true} onClose={() => setDisplayHelp(false)}>
+                    <Modal.Header>Help</Modal.Header>
+                    <Modal.Body className="p-0">
+                        <p className="mb-4">
+                            Here is a tutorial on how to play chess.
+                        </p>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/OCSbzArwB10" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen={true}></iframe>
+                    </Modal.Body>
+                </Modal>
+            </motion.div>
+        );
+    }
 
     return (
         <>
@@ -248,7 +276,8 @@ export default function Game() {
                     transition={{ duration: 0.75, ease: "easeOut" }}
                 >
                     <Nav />
-                    <div className="flex mt-4">
+                    {displayHelp && <DisplayHelp />}
+                    <div className="flex mt-4 wrapper">
                         {gameOver
                             ? <GameOver onRestart={handleRestart} />
                             : <>
