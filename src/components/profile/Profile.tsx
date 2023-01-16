@@ -2,11 +2,8 @@ import Nav from "../Nav";
 import { Tabs } from "flowbite-react";
 import Activity from "./Activity";
 import Games from "./Games";
-import { motion, useScroll, useSpring } from "framer-motion"
 
 export function Profile() {
-    const { scrollYProgress } = useScroll();
-    const scaleX = useSpring(scrollYProgress)
 
     return (
         <>

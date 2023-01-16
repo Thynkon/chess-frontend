@@ -1,5 +1,5 @@
-import { Timeline } from "flowbite-react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { Card, Timeline } from "flowbite-react";
+import { Variants, motion, useScroll, useSpring } from "framer-motion";
 import { GiTrophyCup } from "react-icons/gi";
 
 import {
@@ -12,6 +12,8 @@ import {
     Legend,
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
+import { useEffect, useState } from "react";
+import anime from "animejs";
 
 ChartJS.register(
     RadialLinearScale,
@@ -35,74 +37,78 @@ export const data = {
     ],
 };
 
+const Stat = ({ number, label, id }: { number: number, label: string, id: string }) => {
+    useEffect(() => {
+        anime({
+            targets: "#" + id,
+            innerHTML: [0, number],
+            easing: 'linear',
+            round: 1
+        });
+    }, [number]);
+
+    return (
+        <Card>
+            <h5 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white number-stats" id={id}>
+                {number}
+            </h5>
+            <p className="font-small text-gray-700 dark:text-gray-400 ">{label}</p>
+        </Card>
+    )
+}
+
 
 export function Activity() {
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress)
+    const items = Array(10).fill(
+        <Timeline.Item className="timeline-item">
+            <Timeline.Point icon={GiTrophyCup} />
+            <Timeline.Content>
+                <Timeline.Time>
+                    19 December 2022
+                </Timeline.Time>
+                <Timeline.Title>
+                    Win streak
+                </Timeline.Title>
+                <Timeline.Body>
+                    Today you won 10 consecutive games!
+                </Timeline.Body>
+            </Timeline.Content>
+        </Timeline.Item>
+    );
+    useEffect(() => {
+        var tl = anime.timeline({
+            targets: '.form-field',
+            delay: 20,
+            duration: 1, // Can be inherited
+            direction: 'alternate',
+        });
+
+        tl.add({
+            translateX: 50,
+            // override the easing parameter
+            easing: 'spring',
+        })
+
+    });
+
     return (
         <>
             <motion.div style={{ scaleX }} className="fixed top-0 left-0 right-0 h-2 bg-sky-700 origin-left" />
             <div className="flex justify-center flex-col items-center">
+                <div className="max-w-sm hover:shadow-md">
+                    <div className="flex justify-between space-x-4 text-center">
+                        <Stat number={50} label={"Played"} id={"played"} />
+                        <Stat number={950} label={"Performance"} id={"performance"} />
+                        <Stat number={60} label={"Winrate"} id={"winrate"} />
+                    </div>
+                </div>
                 <div className="w-1/4">
                     <Radar data={data} width={"50%"} />
                 </div>
                 <Timeline className="">
-                    <Timeline.Item>
-                        <Timeline.Point icon={GiTrophyCup} />
-                        <Timeline.Content>
-                            <Timeline.Time>
-                                19 December 2022
-                            </Timeline.Time>
-                            <Timeline.Title>
-                                Win streak
-                            </Timeline.Title>
-                            <Timeline.Body>
-                                Today you won 10 consecutive games!
-                            </Timeline.Body>
-                        </Timeline.Content>
-                    </Timeline.Item>
-                    <Timeline.Item>
-                        <Timeline.Point icon={GiTrophyCup} />
-                        <Timeline.Content>
-                            <Timeline.Time>
-                                19 December 2022
-                            </Timeline.Time>
-                            <Timeline.Title>
-                                Win streak
-                            </Timeline.Title>
-                            <Timeline.Body>
-                                Today you won 10 consecutive games!
-                            </Timeline.Body>
-                        </Timeline.Content>
-                    </Timeline.Item>
-                    <Timeline.Item>
-                        <Timeline.Point icon={GiTrophyCup} />
-                        <Timeline.Content>
-                            <Timeline.Time>
-                                19 December 2022
-                            </Timeline.Time>
-                            <Timeline.Title>
-                                Win streak
-                            </Timeline.Title>
-                            <Timeline.Body>
-                                Today you won 10 consecutive games!
-                            </Timeline.Body>
-                        </Timeline.Content>
-                    </Timeline.Item>
-                    <Timeline.Item>
-                        <Timeline.Point icon={GiTrophyCup} />
-                        <Timeline.Content>
-                            <Timeline.Time>
-                                19 December 2022
-                            </Timeline.Time>
-                            <Timeline.Title>
-                                Win streak
-                            </Timeline.Title>
-                            <Timeline.Body>
-                                Today you won 10 consecutive games!
-                            </Timeline.Body>
-                        </Timeline.Content>
-                    </Timeline.Item>
+                    {items}
                 </Timeline>
             </div>
         </>

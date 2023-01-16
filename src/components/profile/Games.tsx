@@ -1,13 +1,7 @@
-import { Card, Table, Timeline } from "flowbite-react";
-import { GiTrophyCup } from "react-icons/gi";
-import Game from "../games/Game";
-import { parseFen } from "chessops/fen";
-import { Chess } from "chessops";
+import { Card } from "flowbite-react";
 import { Config } from 'chessground/config';
 import Chessground from "@react-chess/chessground";
-import { Key } from "chessground/types";
 
-import { IoIosSkipBackward, IoIosSkipForward } from "react-icons/io"
 
 // these styles must be imported somewhere
 import "../../assets/base.css";
@@ -19,7 +13,7 @@ import { MovesHistory } from "../games/MovesHistory";
 function GameCard() {
     return (
         <div className="max-w-sm cursor-pointer hover:shadow-md">
-            <Card imgSrc="https://flowbite.com/docs/images/blog/image-1.jpg">
+            <Card imgSrc="/assets/images/chessboard_analysis.png">
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                     Win
                 </h5>

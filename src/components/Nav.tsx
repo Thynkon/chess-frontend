@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Dropdown, Navbar } from 'flowbite-react';
 
 import { useAuthUser } from 'react-auth-kit'
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+import anime from 'animejs';
 
 const pages = ['Games', 'Stats', 'Other players'];
 
@@ -34,6 +35,26 @@ export function Nav() {
         signOut();
     };
 
+    const dropdownRef = useRef(null);
+
+    function handleOpen() {
+        anime({
+            targets: '.dropdown',
+            height: 'auto',
+            duration: 200,
+            easing: 'easeInOutQuad'
+        });
+    }
+
+    function handleClose() {
+        anime({
+            targets: '.dropdown',
+            height: 0,
+            duration: 200,
+            easing: 'easeInOutQuad'
+        });
+    }
+
     return (
         <Navbar
             fluid={true}
@@ -55,6 +76,7 @@ export function Nav() {
                     arrowIcon={true}
                     inline={true}
                     label={"Settings"}
+                    className='dropdown'
                 >
                     <Dropdown.Header>
                         <span className="block truncate text-sm font-medium">

@@ -1,8 +1,9 @@
 import { Formik } from "formik";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Api from "../api/requests";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert } from "flowbite-react";
+import anime from "animejs";
 
 const api = new Api();
 
@@ -20,6 +21,22 @@ function Register() {
     const navigate = useNavigate();
     const { state } = useLocation();
     const [apiError, setApiError] = useState("");
+
+    useEffect(() => {
+        var tl = anime.timeline({
+            targets: '.form-field',
+            delay: 20,
+            duration: 1, // Can be inherited
+            direction: 'alternate',
+        });
+
+        tl.add({
+            translateX: 50,
+            // override the easing parameter
+            easing: 'spring',
+        })
+
+    });
 
     const handleRegister = (credentials: { username: string, password: string }, { setSubmitting, setErrors }: any) => {
         api.createAccount(credentials).then((response) => {
@@ -76,7 +93,7 @@ function Register() {
                                 isSubmitting,
                             }) => (
 
-                                <form className="w-full flex flex-col space-y-6" onSubmit={handleSubmit}>
+                                <form className="w-full flex flex-col space-y-6 form-field" onSubmit={handleSubmit}>
                                     {apiError ? (
                                         <Alert color="failure">
                                             {errors.api}

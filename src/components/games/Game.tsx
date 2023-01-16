@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { memo, useEffect, useState } from "react";
 import { Config } from 'chessground/config';
 import Chessground from "@react-chess/chessground";
-import { Key, Timer } from "chessground/types";
 
 // these styles must be imported somewhere
 import "../../assets/base.css";
@@ -17,29 +16,36 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import Loading from "./Loading";
 import anime from "animejs";
 
-type Moves = {
-    [key in Key]: Key[]
-}
-
 type HistoryMoves = {
     uci: string[],
     player: string[]
 }
 
 export default function Game() {
+    // Fetch arguments from request (passed to router)
     const { state } = useLocation();
     const { game_id, user_id, duration } = state;
-    const [legalMoves, setLegalMoves] = useState(new Map());
-    const [fen, setFen] = useState("");
+
     const [socket, setSocket] = useState<Socket | null>(null);
     const [channel, setChannel] = useState<Channel | null>(null);
+
+    const [legalMoves, setLegalMoves] = useState(new Map());
+
+    const [fen, setFen] = useState("");
     const [orientation, setOrientation] = useState<"white" | "black" | undefined>("white");
     const [movesHistory, setMovesHistory] = useState<HistoryMoves>({ "player": [], "uci": [] });
+
     const [gameOver, setGameOver] = useState(false);
-    const [spentTime, setSpentTime] = useState<number>(0);
-    const [dur, setDur] = useState<number>(duration);
+    const [gameOverReason, setGameOverReason] = useState("");
+
+    const [gameDuration, setGameDuration] = useState<number>(duration);
+    // Logo loading animation
     const [loading, setLoading] = useState(true);
+    // F1 Modal (Chess tutorial)
     const [displayHelp, setDisplayHelp] = useState(false);
+
+    // Timer
+    const [isPlaying, setIsPlaying] = useState(true);
 
     useEffect(() => {
         if (socket === null) {
@@ -67,6 +73,9 @@ export default function Game() {
             channel?.on("play_game", payload => {
                 if (payload.status === "checkmate") {
                     setGameOver(true);
+                } else if (payload.status === "won") {
+                    setGameOver(true);
+                    setGameOverReason("Congratulations! You won!");
                 } else {
                     const lm = new Map(Object.entries(payload.legal_moves));
                     setLegalMoves(lm);
@@ -79,10 +88,10 @@ export default function Game() {
                 }
             });
             setChannel(channel);
-
-            console.log("Setting spent time to => " + dur);
-            setSpentTime(dur);
         }
+
+        // When this component is rendered, the loading animation lasts 1,5 seconds
+        // After that time, disable it and show chessboard
         const timer = setTimeout(() => {
             setLoading(false);
         }, 1500);
@@ -90,20 +99,30 @@ export default function Game() {
         document.addEventListener("keydown", (event: KeyboardEvent) => {
             if (event.key === "F1") {
                 event.preventDefault();
+                setIsPlaying(false);
                 setDisplayHelp(true);
             }
         }, true);
 
-        anime({
-            targets: '.wrapper',
+        var tl = anime.timeline({
+            targets: '.game-item',
+            delay: function (el, i) { return i * 200 },
+            duration: 500, // Can be inherited
+            easing: 'easeOutExpo', // Can be inherited
+            direction: 'alternate', // Is not inherited
+            loop: false // Is not inherited
+        });
+
+        tl.add({
             translateY: 25,
-            delay: anime.stagger(1000, { from: 'center' }),
+            // override the easing parameter
+            easing: 'spring',
         });
 
         return () => {
             clearTimeout(timer);
         };
-    }, [orientation, legalMoves, fen, movesHistory]);
+    }, [orientation, legalMoves, fen, movesHistory, gameOver]);
 
     const handleRestart = () => {
         // Restart game logic here
@@ -111,12 +130,12 @@ export default function Game() {
     };
 
     const handleLostByTime = () => {
-        console.log("You lost by time!");
-        alert("You lost by time!");
-        // Restart game logic here
-        setGameOver(false);
+        setGameOverReason("Game over! No more time remaining!");
+        setGameOver(true);
     };
 
+    // Chessboard configuration
+    // https://github.com/lichess-org/chessground/blob/master/src/state.ts
     const config: Config = {
         fen: fen,
         orientation: orientation,
@@ -161,14 +180,18 @@ export default function Game() {
 
     const GameOver = ({ onRestart }: any) => {
         const navigate = useNavigate();
+
         return (
             <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 1.0 }}
+                transition={{ duration: 2.0 }}
             >
-                <Modal show={true} onClose={() => navigate("/")}>
-                    <Modal.Header>Game over!</Modal.Header>
+                <Modal show={true} onClose={() => {
+                    setGameOver(false);
+                    navigate("/");
+                }}>
+                    <Modal.Header>{gameOverReason}</Modal.Header>
                     <Modal.Body className="p-0">
                         <img src="/assets/images/game_over.jpg" className="w-full h-full" />
                     </Modal.Body>
@@ -176,7 +199,10 @@ export default function Game() {
                         <Button onClick={handleRestart}>Restart</Button>
                         <Button
                             color="gray"
-                            onClick={() => navigate("/")}
+                            onClick={() => {
+                                setGameOver(false);
+                                navigate("/");
+                            }}
                         >
                             Return to the main menu
                         </Button>
@@ -190,7 +216,11 @@ export default function Game() {
         const minutes = `0${Math.floor(remainingTime / 60)}`.slice(-2);
         const seconds = `0${remainingTime % 60}`.slice(-2);
 
-        return `${minutes}:${seconds}`
+        return (
+            <div>
+                {minutes} : {seconds}
+            </div>
+        );
     }
 
     function RenderTime({ remainingTime }: any) {
@@ -199,20 +229,18 @@ export default function Game() {
         }
 
         return (
-            <div className="text-4xl">
+            <span className="text-4xl time">
                 {formatSeconds(remainingTime)}
-            </div>
+            </span>
         );
     };
 
     const CountdownTimer = memo(({ duration }: any) => {
-        const [isPlaying, setIsPlaying] = useState(true);
-
         useEffect(() => {
-        })
+        }, []);
 
         return (
-            <div className='flex justify-center items-center pt-1 p-2 text-center text-gray-700 max-h-40 countdown-timer'>
+            <div className='flex justify-center items-center text-center text-gray-700 max-h-44 game-item'>
                 <CountdownCircleTimer
                     isPlaying={isPlaying}
                     duration={duration}
@@ -221,29 +249,32 @@ export default function Game() {
                     onComplete={() => handleLostByTime()}
                     updateInterval={1}
                     onUpdate={(remainingTime: number) => {
-                        //setSpentTime(spentTime - 1);
+                        setGameDuration(remainingTime);
                     }}
                 >
-                    {({ remainingTime, color }: any) => (
-                        <div className='text-sm'>
+                    {({ remainingTime }: { remainingTime: number }) => (
+                        <div className="text-sm">
                             <RenderTime remainingTime={remainingTime} />
                         </div>
-                    )
-                    }
+                    )}
                 </CountdownCircleTimer>
-            </div>
-        )
+            </div >
+        );
     });
 
     const DisplayHelp = () => {
-        const navigate = useNavigate();
+        useEffect(() => { }, []);
+
         return (
             <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 1.0 }}
             >
-                <Modal show={true} onClose={() => setDisplayHelp(false)}>
+                <Modal show={true} onClose={() => {
+                    setIsPlaying(true);
+                    setDisplayHelp(false)
+                }}>
                     <Modal.Header>Help</Modal.Header>
                     <Modal.Body className="p-0">
                         <p className="mb-4">
@@ -277,12 +308,12 @@ export default function Game() {
                 >
                     <Nav />
                     {displayHelp && <DisplayHelp />}
-                    <div className="flex mt-4 wrapper">
+                    <div className="flex mt-4 game-items">
                         {gameOver
                             ? <GameOver onRestart={handleRestart} />
                             : <>
-                                <CountdownTimer duration={dur} />
-                                <div className="w-full h-full flex items-center justify-center">
+                                <CountdownTimer duration={gameDuration} />
+                                <div className="w-full h-full flex items-center justify-center game-item">
                                     <Chessground width={800} height={800} config={config} />
                                 </div>
                                 <MovesHistory movesHistory={movesHistory} />

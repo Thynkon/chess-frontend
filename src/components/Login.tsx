@@ -3,6 +3,8 @@ import { Formik } from "formik";
 import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
 import { Link, Navigate, useLocation } from "react-router-dom";
 import Api from "../api/requests";
+import { useEffect } from "react";
+import anime from "animejs";
 
 const api = new Api();
 
@@ -16,6 +18,22 @@ export function Login() {
 
     const isAuthenticated = useIsAuthenticated()
     const signIn = useSignIn()
+
+    useEffect(() => {
+        var tl = anime.timeline({
+            targets: '.form-field',
+            delay: 20,
+            duration: 1, // Can be inherited
+            direction: 'alternate',
+        });
+
+        tl.add({
+            translateX: 50,
+            // override the easing parameter
+            easing: 'spring',
+        })
+
+    });
 
     const handleLogin = (credentials: { username: string, password: string }, { setSubmitting, setErrors }: any) => {
         api.getAuthToken(credentials).then((response) => {
@@ -83,7 +101,7 @@ export function Login() {
                                     isSubmitting,
                                 }) => (
 
-                                    <form className="w-full flex flex-col space-y-6" onSubmit={handleSubmit}>
+                                    <form className="w-full flex flex-col space-y-6 form-field" onSubmit={handleSubmit}>
                                         {errors.api ? (
                                             <Alert color="failure">
                                                 {errors.api && touched.api && errors.api}
@@ -111,7 +129,7 @@ export function Login() {
                                             </Alert>
                                         ) : ""}
 
-                                        <button type="submit" disabled={isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-lg">
+                                        <button type="submit" disabled={isSubmitting} className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-lg ">
                                             Login
                                         </button>
                                     </form>

@@ -17,7 +17,7 @@ export function MovesHistory({ movesHistory }: any) {
                 }
         };
         return (
-                <div className="w-80 flex overflow-scroll max-h-72">
+                <div className="w-80 flex overflow-scroll max-h-72 game-item">
                         <div className="w-1/2">
                                 <div className="px-6 py-3 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400 cursor-pointer">
                                         <IoIosSkipBackward />
