@@ -1,6 +1,6 @@
 import { Nav } from "../Nav";
 import { motion } from "framer-motion";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Config } from 'chessground/config';
 import Chessground from "@react-chess/chessground";
 
@@ -12,7 +12,6 @@ import { MovesHistory } from "./MovesHistory";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Channel, Socket } from "phoenix";
 import { Button, Modal } from "flowbite-react";
-import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import Loading from "./Loading";
 import anime from "animejs";
 
@@ -39,6 +38,7 @@ export default function Game() {
     const [gameOverReason, setGameOverReason] = useState("");
 
     const [gameDuration, setGameDuration] = useState<number>(duration);
+    const [remainingTime, setRemainingTime] = useState<number>(gameDuration);
     // Logo loading animation
     const [loading, setLoading] = useState(true);
     // F1 Modal (Chess tutorial)
@@ -46,6 +46,27 @@ export default function Game() {
 
     // Timer
     const [isPlaying, setIsPlaying] = useState(false);
+
+    // source: https://overreacted.io/making-setinterval-declarative-with-react-hooks/
+    function useInterval(callback: any, delay: number) {
+        const savedCallback = useRef<() => void>();
+
+        // Remember the latest callback.
+        useEffect(() => {
+            savedCallback.current = callback
+        }, [callback])
+
+        // Set up the interval.
+        useEffect(() => {
+            function tick() {
+                savedCallback.current && savedCallback.current();
+            }
+            if (delay !== null) {
+                let id = setInterval(tick, delay)
+                return () => clearInterval(id)
+            }
+        }, [delay])
+    }
 
     useEffect(() => {
         if (socket === null) {
@@ -92,7 +113,7 @@ export default function Game() {
 
         // When this component is rendered, the loading animation lasts 1,5 seconds
         // After that time, disable it and show chessboard
-        const timer = setTimeout(() => {
+        const loadingTimer = setTimeout(() => {
             setLoading(false);
         }, 1500);
 
@@ -120,9 +141,19 @@ export default function Game() {
         });
 
         return () => {
-            clearTimeout(timer);
+            clearTimeout(loadingTimer);
         };
     }, [orientation, legalMoves, fen, movesHistory, gameOver]);
+
+    useInterval(() => {
+        if (isPlaying) {
+            if (remainingTime >= 0) {
+                setRemainingTime((oldValue) => oldValue - 1);
+            } else {
+                handleLostByTime();
+            }
+        }
+    }, isPlaying === true ? 1000 : 0);
 
     const handleRestart = () => {
         // Restart game logic here
@@ -218,54 +249,45 @@ export default function Game() {
         );
     }
 
-    const formatSeconds = (remainingTime: number) => {
+    function RenderTime({ remainingTime }: any) {
         const minutes = `0${Math.floor(remainingTime / 60)}`.slice(-2);
         const seconds = `0${remainingTime % 60}`.slice(-2);
 
-        return (
-            <div>
-                {minutes} : {seconds}
-            </div>
-        );
-    }
-
-    function RenderTime({ remainingTime }: any) {
         if (remainingTime === 0) {
             return <div className="timer">Too lale...</div>;
         }
 
         return (
-            <span className="text-2xl time">
-                {formatSeconds(remainingTime)}
-            </span>
+            <>
+                <div className="w-24 mx-1 bg-white rounded-lg">
+                    <div className="leading-none" x-text="minutes">{minutes}</div>
+                    <div className="uppercase text-sm leading-none">Minutes</div>
+                </div>
+                <div className="w-24 mx-1 bg-white rounded-lg">
+                    <div className="leading-none" x-text="seconds">{seconds}</div>
+                    <div className="uppercase text-sm leading-none">Seconds</div>
+                </div>
+            </>
         );
     };
 
     const CountdownTimer = memo(({ duration }: any) => {
         useEffect(() => {
-        }, []);
+            anime({
+                targets: "#coutndown-timer",
+                innerHTML: [0, duration],
+                easing: 'linear',
+                round: 1
+            });
+
+        }, [isPlaying]);
 
         return (
-            <div className='flex justify-center items-center md:justify-start md:items-start text-center text-gray-700 game-item'>
-                <CountdownCircleTimer
-                    isPlaying={isPlaying}
-                    duration={duration}
-                    colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-                    colorsTime={[10, 6, 3, 0]}
-                    onComplete={() => handleLostByTime()}
-                    updateInterval={1}
-                    onUpdate={(remainingTime: number) => {
-                        setGameDuration(remainingTime);
-                    }}
-                    size={140}
-                >
-                    {({ remainingTime }: { remainingTime: number }) => (
-                        <div className="">
-                            <RenderTime remainingTime={remainingTime} />
-                        </div>
-                    )}
-                </CountdownCircleTimer>
-            </div >
+            <div>
+                <div className="text-6xl text-center flex w-full items-center justify-center text-gray-700">
+                    <RenderTime id="countdown-timer" remainingTime={remainingTime} />
+                </div>
+            </div>
         );
     });
 
@@ -320,9 +342,9 @@ export default function Game() {
                         {gameOver
                             ? <GameOver onRestart={handleRestart} />
                             : <>
-                                <div className="flex flex-col md:flex-row w-full space-y-4 md:space-x-56 justify-between">
+                                <div className="flex flex-col md:flex-row w-full md:items-start space-y-4 md:space-y-0 md:space-x-56 justify-between game-item">
                                     <CountdownTimer duration={gameDuration} />
-                                    <div className="flex items-center justify-center aspect-square grow game-item">
+                                    <div className="flex items-center justify-center aspect-square grow">
                                         <Chessground contained={true} config={config} />
                                     </div>
                                     <MovesHistory movesHistory={movesHistory} />
