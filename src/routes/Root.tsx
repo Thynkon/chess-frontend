@@ -39,7 +39,7 @@ export default function Root() {
                     <div className="text-black text-3xl mr-4 hover:cursor-pointer" onClick={previous}>
                         <IoIosArrowBack />
                     </div>
-                    <Slider className="pt-6 mb-6 w-96" {...settings} ref={slider}>
+                    <Slider className="pt-6 mb-6 w-64 md:w-96" {...settings} ref={slider}>
                         <PlayAgainstComputer />
                         <PlayAgainstFriend />
                     </Slider>

@@ -48,7 +48,7 @@ const Stat = ({ number, label, id }: { number: number, label: string, id: string
     }, [number]);
 
     return (
-        <Card>
+        <Card className="w-full md:w-auto">
             <h5 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white number-stats" id={id}>
                 {number}
             </h5>
@@ -97,14 +97,14 @@ export function Activity() {
         <>
             <motion.div style={{ scaleX }} className="fixed top-0 left-0 right-0 h-2 bg-sky-700 origin-left" />
             <div className="flex justify-center flex-col items-center">
-                <div className="max-w-sm hover:shadow-md">
-                    <div className="flex justify-between space-x-4 text-center">
+                <div className="w-full md:max-w-sm hover:shadow-md">
+                    <div className="flex flex-col md:flex-row justify-between gap-4 text-center w-full">
                         <Stat number={50} label={"Played"} id={"played"} />
                         <Stat number={950} label={"Performance"} id={"performance"} />
                         <Stat number={60} label={"Winrate"} id={"winrate"} />
                     </div>
                 </div>
-                <div className="w-1/4">
+                <div className="w-full h-full md:w-1/4">
                     <Radar data={data} width={"50%"} />
                 </div>
                 <Timeline className="">

@@ -71,7 +71,7 @@ export function Nav() {
                     ExChess
                 </span>
             </Navbar.Brand>
-            <div className="flex md:order-2">
+            <div className="flex md:order-2 items-center">
                 <Dropdown
                     arrowIcon={true}
                     inline={true}

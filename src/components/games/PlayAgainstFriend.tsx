@@ -72,7 +72,7 @@ export function PlayAgainstFriend() {
 
                         <div className="w-full">
                             <div className="py-6 text-center">
-                                <i className="las la-user-friends text-xs text-black sm:text-3xl md:text-7xl mr-5"></i>
+                                <i className="las la-user-friends text-5xl text-black sm:text-3xl md:text-8xl mr-5" />
                             </div>
                             <h5 className="text-gray-900 text-xl font-medium mb-2">Play against friend</h5>
                             <Form className="w-full flex flex-col space-y-6">

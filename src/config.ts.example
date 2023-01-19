@@ -1,0 +1,5 @@
+const host = '<API_URL>';
+
+export const config = {
+    api_url: `${host}`,
+};

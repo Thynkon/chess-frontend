@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(
 //<div className='px-6'>
 //<React.StrictMode>
 root.render(
-  <div className='px-6'>
+  <div className='md:px-6 px-1'>
     <BrowserRouter>
       <App />
     </BrowserRouter>

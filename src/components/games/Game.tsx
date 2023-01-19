@@ -45,7 +45,7 @@ export default function Game() {
     const [displayHelp, setDisplayHelp] = useState(false);
 
     // Timer
-    const [isPlaying, setIsPlaying] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
         if (socket === null) {
@@ -154,6 +154,12 @@ export default function Game() {
                         uci: [...prevState.uci],
                     }));
 
+                    // By default, the timer is disabled.
+                    // Only enable it on the first move.
+                    if (isPlaying === false) {
+                        setIsPlaying(true);
+                    }
+
                     // cleaning FEN, if it is not cleaned, after this method,
                     // ReactJS will still use the old FEN which will cause a rollback
                     // on the chessboard
@@ -229,7 +235,7 @@ export default function Game() {
         }
 
         return (
-            <span className="text-4xl time">
+            <span className="text-2xl time">
                 {formatSeconds(remainingTime)}
             </span>
         );
@@ -240,7 +246,7 @@ export default function Game() {
         }, []);
 
         return (
-            <div className='flex justify-center items-center text-center text-gray-700 max-h-44 game-item'>
+            <div className='flex justify-center items-center md:justify-start md:items-start text-center text-gray-700 game-item'>
                 <CountdownCircleTimer
                     isPlaying={isPlaying}
                     duration={duration}
@@ -251,9 +257,10 @@ export default function Game() {
                     onUpdate={(remainingTime: number) => {
                         setGameDuration(remainingTime);
                     }}
+                    size={140}
                 >
                     {({ remainingTime }: { remainingTime: number }) => (
-                        <div className="text-sm">
+                        <div className="">
                             <RenderTime remainingTime={remainingTime} />
                         </div>
                     )}
@@ -296,8 +303,9 @@ export default function Game() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 1.5, ease: "easeOut" }}
+                    className="w-full h-full flex justify-center items-center"
                 >
-                    <Loading className="h-1/4 w-full" />
+                    <Loading />
                 </motion.div>
                 :
                 <motion.div
@@ -308,15 +316,17 @@ export default function Game() {
                 >
                     <Nav />
                     {displayHelp && <DisplayHelp />}
-                    <div className="flex mt-4 game-items">
+                    <div className="flex flex-col md:flex-row mt-4 game-items">
                         {gameOver
                             ? <GameOver onRestart={handleRestart} />
                             : <>
-                                <CountdownTimer duration={gameDuration} />
-                                <div className="w-full h-full flex items-center justify-center game-item">
-                                    <Chessground width={800} height={800} config={config} />
+                                <div className="flex flex-col md:flex-row w-full space-y-4 md:space-x-56 justify-between">
+                                    <CountdownTimer duration={gameDuration} />
+                                    <div className="flex items-center justify-center aspect-square grow game-item">
+                                        <Chessground contained={true} config={config} />
+                                    </div>
+                                    <MovesHistory movesHistory={movesHistory} />
                                 </div>
-                                <MovesHistory movesHistory={movesHistory} />
                             </>
                         }
                     </div>
