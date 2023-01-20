@@ -95,14 +95,14 @@ function PlayAgainstComputer() {
         return (
             <FormikProvider value={formik}>
                 <div className="flex justify-center md:w-96">
-                    <div className="p-6 md:w-96 bg-gray-50 rounded-md shadow-md">
+                    <div className="p-6 md:w-96 rounded-md shadow-md">
                         <form onSubmit={formik.handleSubmit} className="w-full">
                             <div className="py-6 text-center">
                                 <i className="las la-robot text-5xl text-black sm:text-3xl md:text-8xl mr-5" />
                             </div>
                             <h5 className="text-gray-900 text-xl font-medium mb-2">Play against computer</h5>
                             <div className="w-full flex flex-col space-y-6">
-                                <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
+                                <div className="p-2 bg-neutral-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                     <label className="block">Variant</label>
                                     <Field name="variant" component={VariantDropdown}
                                         variants={variants.map(v => v.name)}

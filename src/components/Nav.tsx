@@ -63,9 +63,9 @@ export function Nav() {
         >
             <Navbar.Brand onClick={() => navigate("/")}>
                 <img
-                    src="https://flowbite.com/docs/images/logo.svg"
+                    src="/assets/images/logo.png"
                     className="mr-3 h-6 sm:h-9"
-                    alt="Flowbite Logo"
+                    alt="ExChess logo"
                 />
                 <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white cursor-pointer">
                     ExChess

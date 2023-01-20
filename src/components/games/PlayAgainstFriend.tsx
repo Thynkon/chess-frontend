@@ -54,7 +54,7 @@ export function PlayAgainstFriend() {
     }
     return (
         <div className="flex justify-center">
-            <div className="p-6 w-96 bg-gray-50 rounded-md shadow-md">
+            <div className="p-6 md:w-96 rounded-md shadow-md">
                 <Formik
                     initialValues={{ variant: '', level: 1, duration: 5 }}
                     validate={validateForm}

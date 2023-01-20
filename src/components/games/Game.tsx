@@ -284,7 +284,7 @@ export default function Game() {
 
         return (
             <div>
-                <div className="text-6xl text-center flex w-full items-center justify-center text-gray-700">
+                <div className="text-4xl md:text-6xl text-center flex w-full items-center justify-center text-gray-700 ">
                     <RenderTime id="countdown-timer" remainingTime={remainingTime} />
                 </div>
             </div>
@@ -342,7 +342,7 @@ export default function Game() {
                         {gameOver
                             ? <GameOver onRestart={handleRestart} />
                             : <>
-                                <div className="flex flex-col md:flex-row w-full md:items-start space-y-4 md:space-y-0 md:space-x-56 justify-between game-item">
+                                <div className="flex flex-col md:flex-row w-full md:items-start space-y-8 md:space-y-0 md:space-x-56 justify-between game-item">
                                     <CountdownTimer duration={gameDuration} />
                                     <div className="flex items-center justify-center aspect-square grow">
                                         <Chessground contained={true} config={config} />
