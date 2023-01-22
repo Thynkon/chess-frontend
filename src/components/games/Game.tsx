@@ -32,7 +32,8 @@ export default function Game() {
 
     const [fen, setFen] = useState("");
     const [orientation, setOrientation] = useState<"white" | "black" | undefined>("white");
-    const [movesHistory, setMovesHistory] = useState<HistoryMoves>({ "player": [], "uci": [] });
+    const movesHistoryInitialState = { "player": [], "uci": [] };
+    const [movesHistory, setMovesHistory] = useState<HistoryMoves>(movesHistoryInitialState);
 
     const [gameOver, setGameOver] = useState(false);
     const [gameOverReason, setGameOverReason] = useState("");
@@ -47,6 +48,14 @@ export default function Game() {
     // Timer
     const [isPlaying, setIsPlaying] = useState(false);
     const [hasGameStarted, setHasGameStarted] = useState(false);
+
+    function resetGame() {
+        setGameOver(false);
+        setIsPlaying(false);
+        setGameDuration(duration);
+        setMovesHistory(movesHistoryInitialState);
+        setLegalMoves(new Map());
+    }
 
     // source: https://overreacted.io/making-setinterval-declarative-with-react-hooks/
     function useInterval(callback: any, delay: number) {
@@ -100,10 +109,14 @@ export default function Game() {
 
             channel?.on("play_game", payload => {
                 if (payload.status === "checkmate") {
-                    setGameOver(true);
-                } else if (payload.status === "won") {
-                    setGameOver(true);
-                    setGameOverReason("Congratulations! You won!");
+                    if (payload.winner === orientation) {
+                        setGameOver(true);
+                        setGameOverReason("Congratulations! You won!");
+                    } else {
+                        setGameOver(true);
+                        setGameOverReason("Checkmate! Game Over.");
+                        setIsPlaying(false);
+                    }
                 } else {
                     const lm = new Map(Object.entries(payload.legal_moves));
                     setLegalMoves(lm);
@@ -182,8 +195,10 @@ export default function Game() {
     }, isPlaying === true ? 1000 : 0);
 
     const handleRestart = () => {
-        // Restart game logic here
-        setGameOver(false);
+        // Reset all game states
+        resetGame();
+        // Reask backend to play again
+        channel?.push("init_game", { game_id: game_id });
     };
 
     const handleLostByTime = () => {
@@ -254,7 +269,7 @@ export default function Game() {
                 transition={{ duration: 2.0 }}
             >
                 <Modal show={true} onClose={() => {
-                    setGameOver(false);
+                    resetGame();
                     navigate("/");
                 }}>
                     <Modal.Header>{gameOverReason}</Modal.Header>
@@ -367,7 +382,7 @@ export default function Game() {
                 >
                     <Nav />
                     {displayHelp && <DisplayHelp />}
-                    <div className="flex flex-col md:flex-row mt-4 game-items">
+                    <div className="flex flex-col md:flex-row md:mt-4 game-items">
                         {gameOver
                             ? <GameOver onRestart={handleRestart} />
                             : <>
