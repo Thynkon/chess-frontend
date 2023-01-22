@@ -37,7 +37,7 @@ function GameCard() {
                 <div>
                     <img src="/assets/images/chessboard_analysis.png" className="invisible w-0 md:visible md:w-auto" />
                 </div>
-                <div className="flex flex-col gap-1 text-center md:text-left mt-2 md:text-base">
+                <div className="flex flex-col gap-1 text-center md:text-left mt-2 md:text-base p-4">
                     <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                         Win
                     </h5>

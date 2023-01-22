@@ -46,6 +46,7 @@ export default function Game() {
 
     // Timer
     const [isPlaying, setIsPlaying] = useState(false);
+    const [hasGameStarted, setHasGameStarted] = useState(false);
 
     // source: https://overreacted.io/making-setinterval-declarative-with-react-hooks/
     function useInterval(callback: any, delay: number) {
@@ -89,6 +90,12 @@ export default function Game() {
                 setLegalMoves(lm);
                 setFen(payload.fen);
                 setOrientation(payload.orientation);
+            });
+
+            channel?.on("uci_move", payload => {
+                const lm = new Map(Object.entries(payload.legal_moves));
+                setLegalMoves(lm);
+                setFen(payload.fen);
             });
 
             channel?.on("play_game", payload => {
@@ -140,10 +147,29 @@ export default function Game() {
             easing: 'spring',
         });
 
+        // Animate the pieces before the game starts
+        if (!hasGameStarted && !loading) {
+            anime({
+                targets: 'piece',
+                scale: [
+                    { value: .1, easing: 'easeOutSine', duration: 500 },
+                    { value: 1, easing: 'easeInOutQuad', duration: 500 }
+                ],
+                delay: anime.stagger(200, { grid: [14, 5], from: 'center' })
+            });
+
+            // Once the chessboard is loaded, wait 1s after the animation
+            // and then ask stockfish what is its next move (if stockfish is playing white)
+            setTimeout(() => {
+                channel?.push("uci_move", { game_id: game_id });
+                setHasGameStarted(true);
+            }, 1000);
+        }
+
         return () => {
             clearTimeout(loadingTimer);
         };
-    }, [orientation, legalMoves, fen, movesHistory, gameOver]);
+    }, [orientation, legalMoves, fen, movesHistory, gameOver, loading, hasGameStarted]);
 
     useInterval(() => {
         if (isPlaying) {
@@ -178,6 +204,9 @@ export default function Game() {
             events: {
                 after: function (origin, destination, captured_piece) {
                     console.log("Original move: " + origin + ", destination: " + destination + ",captured_piece: " + captured_piece);
+                    if (!hasGameStarted) {
+                        setHasGameStarted(true);
+                    }
                     channel?.push("play_game", { from: origin, to: destination })
                     setMovesHistory(prevState => ({
                         ...prevState,
@@ -342,7 +371,7 @@ export default function Game() {
                         {gameOver
                             ? <GameOver onRestart={handleRestart} />
                             : <>
-                                <div className="flex flex-col md:flex-row w-full md:items-start space-y-8 md:space-y-0 md:space-x-56 justify-between game-item">
+                                <div className="flex flex-col md:flex-row w-full md:items-start space-y-8 md:space-y-0 md:gap-56 justify-between game-item">
                                     <CountdownTimer duration={gameDuration} />
                                     <div className="flex items-center justify-center aspect-square grow">
                                         <Chessground contained={true} config={config} />
