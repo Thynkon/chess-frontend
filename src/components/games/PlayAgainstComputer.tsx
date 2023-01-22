@@ -102,7 +102,7 @@ function PlayAgainstComputer() {
                             </div>
                             <h5 className="text-gray-900 text-xl font-medium mb-2">Play against computer</h5>
                             <div className="w-full flex flex-col space-y-6">
-                                <div className="p-2 bg-neutral-50 rounded-lg space-y-2 shadow drop-shadow w-full">
+                                <div className="p-2 bg-gray-50 rounded-lg space-y-2 shadow drop-shadow w-full">
                                     <label className="block">Variant</label>
                                     <Field name="variant" component={VariantDropdown}
                                         variants={variants.map(v => v.name)}

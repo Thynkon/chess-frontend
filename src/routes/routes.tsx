@@ -4,7 +4,6 @@ import Login from "../components/Login";
 import Register from "../components/Register";
 import Root from "./Root";
 import Game from "../components/games/Game";
-import { LoadingAnimation } from "../components/Loading";
 import Profile from "../components/profile/Profile";
 import Settings from "../components/Settings";
 
@@ -13,7 +12,6 @@ const RouteComponent = () => {
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/loading" element={<LoadingAnimation />} />
             <Route path={'/'} element={
                 <RequireAuth loginPath={'/login'}>
                     <Root />
