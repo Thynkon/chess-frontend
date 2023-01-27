@@ -21,6 +21,7 @@ function Register() {
     const navigate = useNavigate();
     const { state } = useLocation();
     const [apiError, setApiError] = useState("");
+    const [successfullRegister, setSuccessfullRegister] = useState("");
 
     useEffect(() => {
         var tl = anime.timeline({
@@ -41,6 +42,7 @@ function Register() {
     const handleRegister = (credentials: { username: string, password: string }, { setSubmitting, setErrors }: any) => {
         api.createAccount(credentials).then((response) => {
             console.log(response);
+            setSuccessfullRegister(response.data.msg);
         }).catch(error => {
             console.log(error.response);
             setApiError(error.response.data.error.message);
@@ -97,6 +99,12 @@ function Register() {
                                     {apiError ? (
                                         <Alert color="failure">
                                             {errors.api}
+                                        </Alert>
+                                    ) : ""}
+
+                                    {successfullRegister ? (
+                                        <Alert color="success">
+                                            {successfullRegister}
                                         </Alert>
                                     ) : ""}
 
